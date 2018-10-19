@@ -94,8 +94,11 @@ class Mypublic
         Mypublic::get_schedular(Utils::get_content($Url, $cookies));
         echo Mypublic::get_sqlschedular(Utils::get_content($Url, $cookies), $schoolyear, $semester);
     }
+    static function setJson2($Url, $cookies) {
+        return Mypublic::get_schedular(Utils::get_content($Url, $cookies));
+    }
     static function load($Url, $cookies, $schoolyear, $semester){
-        Mypublic::get_schedular(Utils::get_content($Url, $cookies));
+//        Mypublic::get_schedular(Utils::get_content($Url, $cookies));
         return Mypublic::get_sqlschedular(Utils::get_content($Url, $cookies), $schoolyear, $semester);
     }
 
@@ -235,7 +238,7 @@ class Mypublic
                 $hline += 1;
             }
 
-            return ;
+            return $json_string;
         }
 
     }

@@ -73,7 +73,6 @@ class MyController extends Controller
             ])->execute();
         }
 
-
         //判断数据库里没无数据
         $test = Yii::$app->db->createCommand('select * from student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
         if ($test == true){
@@ -92,7 +91,7 @@ class MyController extends Controller
             Utils::login_post($loginUrl, $cookie, $logindatas);
 
             //判断是否登录成功
-            $check = Mypublic::load($schedularUrl, $cookie);
+            $check = Mypublic::setJson2($schedularUrl, $cookie);
 
             if ($check == true){
                 Yii::$app->db->createCommand()->update('student',[
@@ -117,7 +116,7 @@ class MyController extends Controller
             Utils::login_post($loginUrl, $cookie, $logindatas);
 
             //判断是否登录成功
-            $check = Mypublic::load($schedularUrl, $cookie, '2018' , '1');
+            $check = Mypublic::setJson2($schedularUrl, $cookie);
 
             if ($check == true){
                 Yii::$app->db->createCommand()->insert('student',[
@@ -143,7 +142,7 @@ class MyController extends Controller
     }
 
     /**
-	 * 获取课表
+	 * 课表页面获取课表
 	 **/
     public function actionAcgedular()
     {
@@ -188,48 +187,164 @@ class MyController extends Controller
         }
     }
 
+    /**
+     * 地图页面获取课表
+     **/
+    public function actionMapacgedular()
+    {
+        /***********************获取不同学期的课表***************************/
+        $username = Yii::$app->request->post('stunumber', '');
+        $password = Yii::$app->request->post('password', '');
+        $schoolyear = Yii::$app->request->post('schoolyear', '');
+        $semester = Yii::$app->request->post('semester', '');
+
+        $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
+        $url = "http://class.sise.com.cn:7001/sise/";//主页URl
+        $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
+        $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
+
+
+        //获取登录时需要的数据
+        $logindatas = Mypublic::get_post_data($url, $username, $password, "183.14.30.179");
+        header("Content-type: text/html; charset=utf-8");
+        //登录
+        Utils::login_post($loginUrl, $cookie, $logindatas);
+
+        //判断是否登录成功
+        $check = Mypublic::setJson2($schedularUrl, $cookie);
+
+        if ($check == true){
+            $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp?schoolyear=".$schoolyear."&semester=".$semester; //课程表url
+            Mypublic::setJson2($schedularUrl, $cookie);
+        }
+//        echo json_encode($arrayName = array('state' => $check!='' ? true : false));//获取课表的数据
+
+    }
+
+    /**
+     * 获取学期学年
+    */
     public  function  actionGetgrade() {
         $username = Yii::$app->request->post('stunumber', '');
-
         $grade = Yii::$app->db->createCommand('select stugrade from stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();
-
         $getgrade = unserialize($grade['stugrade']);
 
         echo json_encode($getgrade);
     }
 
 	/**
-	 * 获取个人信息
+	 * 获取绑定个人信息
 	 **/
-	public function actionPersonal()
+	public function actionBindpersonal()
 	{
-	    $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp";
+        $openid = Yii::$app->request->post('openid', '');
+	    $getPersonUser = Yii::$app->db->createCommand('select stuNumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+        $getPersonPass = Yii::$app->db->createCommand('select password from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+        $username = $getPersonUser['stuNumber'];
+        $password = $getPersonPass['password'];
+
+        $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
+        $url = "http://class.sise.com.cn:7001/sise/";//主页URl
+        $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
+        $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
+        $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp"; //主页url
+
+        //获取登录时需要的数据
+        $logindatas = Mypublic::get_post_data($url, $username, $password, "183.14.30.179");
+        header("Content-type: text/html; charset=utf-8");
+        //登录
+        Utils::login_post($loginUrl, $cookie, $logindatas);
+
+        //判断是否登录成功
+        $check = Mypublic::setJson2($schedularUrl, $cookie);
+
 		$cookie = dirname(__FILE__).'/cookie.txt';
 
-		$studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
-		$detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=".$studentid;
-        $detail = Mypublic::get_page(Utils::get_content($detailUrl, $cookie));
-		
-		echo json_encode($detail);
-		
+        if ($check == true) {
+            $studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
+            $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=" . $studentid;
+            $detail = Mypublic::get_page(Utils::get_content($detailUrl, $cookie));
+            echo json_encode($detail);
+        }
+
 	}
 	/**
-	 * 获取课程
+	 * 获取绑定的课程
 	 */
-	public function actionObligatory()
+	public function actionBindobligatory()
 	{
-		$indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp";
-		$cookie = dirname(__FILE__).'/cookie.txt';
+
+        $openid = Yii::$app->request->post('openid', '');
+        $getPersonUser = Yii::$app->db->createCommand('select stuNumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+        $getPersonPass = Yii::$app->db->createCommand('select password from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+        $username = $getPersonUser['stuNumber'];
+        $password = $getPersonPass['password'];
+
+        $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
+        $url = "http://class.sise.com.cn:7001/sise/";//主页URl
+        $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
+        $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
+        $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp"; //主页url
+
+        //获取登录时需要的数据
+        $logindatas = Mypublic::get_post_data($url, $username, $password, "183.14.30.179");
+        header("Content-type: text/html; charset=utf-8");
+        //登录
+        Utils::login_post($loginUrl, $cookie, $logindatas);
+
+        //判断是否登录成功
+        $check = Mypublic::setJson2($schedularUrl, $cookie);
+
+        $cookie = dirname(__FILE__).'/cookie.txt';
 		$obligatory = '';
 
-		$studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
-		$detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=".$studentid;
-        $obligatory = Mypublic::get_obligatory(Utils::get_content($detailUrl, $cookie));
-		
-		echo json_encode($obligatory);
+        if ($check == true) {
+            $studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
+            $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=" . $studentid;
+            $obligatory = Mypublic::get_obligatory(Utils::get_content($detailUrl, $cookie));
+            echo json_encode($obligatory);
+        }
+
 	}
 
-     // 保存微信信息
+    /**
+     * 获取个人信息
+     **/
+    public function actionPersonal()
+    {
+//        $openid = Yii::$app->request->post('openid', '');
+//	    $getPersonUser = Yii::$app->db->createCommand('select stuNumber from wxdetail where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+
+        $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp";
+        $cookie = dirname(__FILE__).'/cookie.txt';
+
+        $studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
+        $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=".$studentid;
+        $detail = Mypublic::get_page(Utils::get_content($detailUrl, $cookie));
+
+        echo json_encode($detail);
+
+    }
+    /**
+     * 获取课程
+     */
+    public function actionObligatory()
+    {
+        $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp";
+        $cookie = dirname(__FILE__).'/cookie.txt';
+        $obligatory = '';
+
+        $studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
+        $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=".$studentid;
+        $obligatory = Mypublic::get_obligatory(Utils::get_content($detailUrl, $cookie));
+
+        echo json_encode($obligatory);
+    }
+
+
+    /**
+      * 保存微信信息
+      */
     public function actionSavedetail()
     {
         $nickName = Yii::$app->request->post('nickName', '');
@@ -268,7 +383,9 @@ class MyController extends Controller
         return;
     }
 
-    //绑定信息
+    /**
+     * 绑定信息
+     */
     public function actionSavebinddetail()
     {
         $openid = Yii::$app->request->post('openid', '');
