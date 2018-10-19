@@ -90,11 +90,13 @@ class Mypublic
     }
 
     //获取课表
-    static function setJson($Url, $cookies) {
-        echo Mypublic::get_schedular(Utils::get_content($Url, $cookies));
+    static function setJson($Url, $cookies, $schoolyear, $semester) {
+        Mypublic::get_schedular(Utils::get_content($Url, $cookies));
+        echo Mypublic::get_sqlschedular(Utils::get_content($Url, $cookies), $schoolyear, $semester);
     }
-    static function load($Url, $cookies){
-        return Mypublic::get_schedular(Utils::get_content($Url, $cookies));
+    static function load($Url, $cookies, $schoolyear, $semester){
+        Mypublic::get_schedular(Utils::get_content($Url, $cookies));
+        return Mypublic::get_sqlschedular(Utils::get_content($Url, $cookies), $schoolyear, $semester);
     }
 
     /**********************防止翻转乱码*****************************/
@@ -135,6 +137,13 @@ class Mypublic
             {
                 $data["stugrade"]["1"][] = $x;
             }
+
+            $stugrade = serialize($data["stugrade"]);
+
+            Yii::$app->db->createCommand()->update('stugrade',[
+                'stugrade' => $stugrade,
+            ],'stunumber = :username')->bindValue(':username', $name_info[1][0])->execute();
+
             preg_match_all("/(教学周: 第(.*?)周)/", $content, $teach_time);
 
             $stu_now_week = isset($teach_time[2][0]) ? $teach_time[2][0]:'';
@@ -225,7 +234,8 @@ class Mypublic
 //               file_put_contents('web/json/test.json', $json_string);
                 $hline += 1;
             }
-            return $json_string;
+
+            return ;
         }
 
     }
@@ -258,18 +268,23 @@ class Mypublic
                     'stunumber' => $stu['stunumber'],
                     'schoolyear' => $schoolyear,
                     'semster' => $semester,
-                    'time' => $i+1,
-                    'monday' => $sc_detail[$i][0],
-                    'tuesday' => $sc_detail[$i][1],
-                    'wednesday' => $sc_detail[$i][2],
-                    'thursday' => $sc_detail[$i][3],
-                    'friday' => $sc_detail[$i][4],
-                    'saturday' => $sc_detail[$i][5],
-                    'sunday' => $sc_detail[$i][6],
+                    'time' => $i + 1,
+                    'monday' => isset($sc_detail[$i][0]) ? $sc_detail[$i][0] : '',
+                    'tuesday' => isset($sc_detail[$i][1]) ? $sc_detail[$i][1] : '',
+                    'wednesday' => isset($sc_detail[$i][2]) ? $sc_detail[$i][2] : '',
+                    'thursday' => isset($sc_detail[$i][3]) ? $sc_detail[$i][3] : '',
+                    'friday' => isset($sc_detail[$i][4]) ? $sc_detail[$i][4] : '',
+                    'saturday' => isset($sc_detail[$i][5]) ? $sc_detail[$i][5] : '',
+                    'sunday' => isset($sc_detail[$i][6]) ? $sc_detail[$i][6] : '',
                 ])->execute();
             }
-            return;
         }
+        $testx = Yii::$app->db->createCommand('select * from scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
+            ->bindValue(':username', $stu['stunumber'])
+            ->bindValue(':schoolyear', $schoolyear)
+            ->bindValue(':semster', $semester)
+            ->queryAll();
+        return json_encode($testx);
     }
     
 	//获取必修课程
