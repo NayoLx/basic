@@ -1,3 +1,39 @@
+# basic
+
+这是基于YII框架搭建的后台，
+主要用于爬课表数据以及返回给前台数据
+需要和小程序端或者其他前端文件一起使用，
+
+
+
+
+已实现功能
+ 1、课表爬取
+ 2、更改学期学年
+ 3、爬取学生个人信息
+ 4、获取学校内网的cookie、token和登陆数据
+ 5、实现json显示
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <p align="center">
     <a href="https://github.com/yiisoft" target="_blank">
         <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">
@@ -231,4 +267,4 @@ vendor/bin/codecept run functional,unit -- --coverage-html --coverage-xml
 ```
 
 You can see code coverage output under the `tests/_output` directory.
-# basic
+
