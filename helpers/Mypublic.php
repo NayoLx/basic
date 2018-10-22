@@ -64,19 +64,29 @@ class Mypublic
         preg_match_all($preg_name, $page, $detail);
 
         $stunum = Mypublic::trimall($detail[1][2]);
+        $year = Mypublic::trimall($detail[1][4]);
         $major = Mypublic::trimall($detail[1][5]);
         $idcard = Mypublic::trimall($detail[1][6]);
         $schoolemail = Mypublic::trimall($detail[1][7]);
         $headmaster = Mypublic::trimall($detail[1][8]);
         $instructor = Mypublic::trimall($detail[1][9]);
+        $necessAllGrade = Mypublic::trimall($detail[1][10]);
+        $alreadyGrade = Mypublic::trimall($detail[1][11]);
+        $unreadyGrade = Mypublic::trimall($detail[1][13]);
+        $grade = Mypublic::trimall($detail[1][21]);
 
         //专业：[1][5] 身份证：[1][6] 邮箱：[1][7] 班主任：[1][8] 辅导员[1][9]
         Yii::$app->db->createCommand()->update('student',[
             'major' => $major,
+            'year' => $year,
             'idcard' => $idcard,
             'schoolemail' => $schoolemail,
             'headmaster' => $headmaster,
             'instructor' => $instructor,
+            'necessAllGrade' => $necessAllGrade ,
+            'alreadyGrade' => $alreadyGrade ,
+            'unreadyGrade' => $unreadyGrade ,
+            'grade' => $grade,
         ],'stunumber = :username')->bindValue(':username', $stunum)->execute();		
 
         return $detail;
@@ -94,9 +104,17 @@ class Mypublic
         Mypublic::get_schedular(Utils::get_content($Url, $cookies));
         echo Mypublic::get_sqlschedular(Utils::get_content($Url, $cookies), $schoolyear, $semester);
     }
-    static function setJson2($Url, $cookies) {
+
+    //地图获取课表
+    static function setJsonmap($Url, $cookies) {
+        echo Mypublic::get_schedular(Utils::get_content($Url, $cookies));
+    }
+
+    //判断用
+    static function setJsoncheck($Url, $cookies) {
         return Mypublic::get_schedular(Utils::get_content($Url, $cookies));
     }
+
     static function load($Url, $cookies, $schoolyear, $semester){
 //        Mypublic::get_schedular(Utils::get_content($Url, $cookies));
         return Mypublic::get_sqlschedular(Utils::get_content($Url, $cookies), $schoolyear, $semester);
@@ -291,28 +309,27 @@ class Mypublic
     }
     
 	//获取必修课程
-	static function get_obligatory($page) {
-	    $page = iconv('GBK', 'UTF-8', $page);
-	    $preg_table = "/<table width=\"90%\" class=\"table\" align=\"center\">(.*?)<\/table>/s";
-	    preg_match($preg_table, $page, $table);	
-	
-	    $ppp = $table[0];
-	    $preg_td = "/<a.*?>(.*?)<\/a>/";
-	    preg_match_all($preg_td, $ppp, $td);
-	    $preg_time = "/<td>[0-9]{4}.*?<\/td>/";
-	    preg_match_all($preg_time, $ppp, $tr);
+	static function get_obligatory($page)
+    {
+        $page = iconv('GBK', 'UTF-8', $page);
+        $preg_table = "/<table width=\"90%\" class=\"table\" align=\"center\">(.*?)<\/table>/s";
+        preg_match($preg_table, $page, $table);
 
-	    $len = count($td[1]);
-	
-	    for($i=0; $i<$len; $i++){
-		    $time = isset($tr[0][$i]) ? $tr[0][$i]: '未修';
-			$time = trim($time,"<td> </td>");
-		    $obligatory[$time][] = $td[1][$i];
-	    }
-		
-	    return $obligatory;
-	
+        $ppp = $table[0];
+        $preg_td = "/<a.*?>(.*?)<\/a>/";
+        preg_match_all($preg_td, $ppp, $td);
+        $preg_time = "/<td>[0-9]{4}.*?<\/td>/";
+        preg_match_all($preg_time, $ppp, $tr);
+
+        $len = count($td[1]);
+
+        for ($i = 0; $i < $len; $i++) {
+            $time = isset($tr[0][$i]) ? $tr[0][$i] : '未修';
+            $time = trim($time, "<td> </td>");
+            $obligatory[$time][] = $td[1][$i];
+        }
+
+        return $obligatory;
+
     }
-    
-	
 }

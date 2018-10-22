@@ -13,6 +13,7 @@ use yii\web\Controller;
 use app\helpers\Mypublic;
 use app\helpers\Utils;
 
+
 class MyController extends Controller
 {
 
@@ -47,6 +48,10 @@ class MyController extends Controller
     {
         return $this->render('getgrade');
     }
+    public function actionMycheckstuname()
+    {
+        return $this->render('checkstuname');
+    }
 	/**
 	 * 登陆
 	 * */
@@ -55,6 +60,7 @@ class MyController extends Controller
         $username = Yii::$app->request->post('username', '');
         $password = Yii::$app->request->post('password', '');
 
+        $ip = Yii::$app->params['ip'];
         $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
         $url = "http://class.sise.com.cn:7001/sise/";//主页URl
         $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
@@ -76,16 +82,13 @@ class MyController extends Controller
         //判断数据库里没无数据
         $test = Yii::$app->db->createCommand('select * from student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
         if ($test == true){
-
-//            $getpass = Yii::$app->db->createCommand('select password from student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
-//
-//            if ($password == $getpass['password']) {
-//
-//                echo json_encode($arrayName = array('state'=>true));//获取课表的数据
-//            }
+            $getpass = Yii::$app->db->createCommand('select password from student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
+            if ($password == $getpass['password']) {
+                return json_encode($arrayName = array('state'=>true));//获取课表的数据
+            }
 
             //获取登录时需要的数据
-            $logindatas = Mypublic::get_post_data($url, $username, $password, "183.14.30.179");
+            $logindatas = Mypublic::get_post_data($url, $username, $password, $ip);
             header("Content-type: text/html; charset=utf-8");
             //登录
             Utils::login_post($loginUrl, $cookie, $logindatas);
@@ -110,7 +113,7 @@ class MyController extends Controller
         }
         else {
             //获取登录时需要的数据
-            $logindatas = Mypublic::get_post_data($url, $username, $password, "183.14.30.179");
+            $logindatas = Mypublic::get_post_data($url, $username, $password, $ip);
             header("Content-type: text/html; charset=utf-8");
             //登录
             Utils::login_post($loginUrl, $cookie, $logindatas);
@@ -161,9 +164,7 @@ class MyController extends Controller
             ->queryAll();
 
         if ($test == true) {
-
             return json_encode($test);
-
         }
         else {
             if (!empty($schoolyear) && !empty($semester)) {
@@ -198,6 +199,7 @@ class MyController extends Controller
         $schoolyear = Yii::$app->request->post('schoolyear', '');
         $semester = Yii::$app->request->post('semester', '');
 
+        $ip = Yii::$app->params['ip'];
         $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
         $url = "http://class.sise.com.cn:7001/sise/";//主页URl
         $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
@@ -205,17 +207,17 @@ class MyController extends Controller
 
 
         //获取登录时需要的数据
-        $logindatas = Mypublic::get_post_data($url, $username, $password, "183.14.30.179");
+        $logindatas = Mypublic::get_post_data($url, $username, $password, $ip);
         header("Content-type: text/html; charset=utf-8");
         //登录
         Utils::login_post($loginUrl, $cookie, $logindatas);
 
         //判断是否登录成功
-        $check = Mypublic::setJson2($schedularUrl, $cookie);
+        $check = Mypublic::setJsonmap($schedularUrl, $cookie);
 
         if ($check == true){
-            $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp?schoolyear=".$schoolyear."&semester=".$semester; //课程表url
-            Mypublic::setJson2($schedularUrl, $cookie);
+            $schedularUrll = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp?schoolyear=".$schoolyear."&semester=".$semester; //课程表url
+            Mypublic::setJsonmap($schedularUrll, $cookie);
         }
 //        echo json_encode($arrayName = array('state' => $check!='' ? true : false));//获取课表的数据
 
@@ -243,30 +245,46 @@ class MyController extends Controller
         $username = $getPersonUser['stuNumber'];
         $password = $getPersonPass['password'];
 
-        $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
-        $url = "http://class.sise.com.cn:7001/sise/";//主页URl
-        $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
-        $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
-        $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp"; //主页url
+        /*判断数据库里有无重复数据*/
+        $testx = Yii::$app->db->createCommand('select * from student where stunumber = :username and password = :password')
+            ->bindValue(':username', $username)
+            ->bindValue(':password', $password)
+            ->queryAll();
 
-        //获取登录时需要的数据
-        $logindatas = Mypublic::get_post_data($url, $username, $password, "183.14.30.179");
-        header("Content-type: text/html; charset=utf-8");
-        //登录
-        Utils::login_post($loginUrl, $cookie, $logindatas);
+        if ($testx) {
 
-        //判断是否登录成功
-        $check = Mypublic::setJson2($schedularUrl, $cookie);
-
-		$cookie = dirname(__FILE__).'/cookie.txt';
-
-        if ($check == true) {
-            $studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
-            $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=" . $studentid;
-            $detail = Mypublic::get_page(Utils::get_content($detailUrl, $cookie));
-            echo json_encode($detail);
+            return json_encode($testx);
         }
+        else {
+          $ip = Yii::$app->params['ip'];
+          $cookie = dirname(__FILE__).'/cookie.txt';
+          $url = "http://class.sise.com.cn:7001/sise/";//主页URl
+          $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
+          $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
+          $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp"; //主页url
 
+          //获取登录时需要的数据
+          $logindatas = Mypublic::get_post_data($url, $username, $password, $ip);
+          header("Content-type: text/html; charset=utf-8");
+          //登录
+          Utils::login_post($loginUrl, $cookie, $logindatas);
+
+          //判断是否登录成功
+          $check = Mypublic::setJsoncheck($schedularUrl, $cookie);
+
+          if ($check == true) {
+              $studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
+              $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=" . $studentid;
+              $detail = Mypublic::get_page(Utils::get_content($detailUrl, $cookie));
+
+              $testx = Yii::$app->db->createCommand('select * from student where stunumber = :username and password = :password')
+                  ->bindValue(':username', $username)
+                  ->bindValue(':password', $password)
+                  ->queryAll();
+
+              return json_encode($testx);
+          }
+        }
 	}
 	/**
 	 * 获取绑定的课程
@@ -280,30 +298,33 @@ class MyController extends Controller
         $username = $getPersonUser['stuNumber'];
         $password = $getPersonPass['password'];
 
-        $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
-        $url = "http://class.sise.com.cn:7001/sise/";//主页URl
-        $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
-        $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
-        $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp"; //主页url
 
-        //获取登录时需要的数据
-        $logindatas = Mypublic::get_post_data($url, $username, $password, "183.14.30.179");
-        header("Content-type: text/html; charset=utf-8");
-        //登录
-        Utils::login_post($loginUrl, $cookie, $logindatas);
+          $ip = Yii::$app->params['ip'];
+          $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
+          $url = "http://class.sise.com.cn:7001/sise/";//主页URl
+          $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
+          $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
+          $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp"; //主页url
 
-        //判断是否登录成功
-        $check = Mypublic::setJson2($schedularUrl, $cookie);
+          //获取登录时需要的数据
+          $logindatas = Mypublic::get_post_data($url, $username, $password, $ip);
+          header("Content-type: text/html; charset=utf-8");
+          //登录
+          Utils::login_post($loginUrl, $cookie, $logindatas);
 
-        $cookie = dirname(__FILE__).'/cookie.txt';
-		$obligatory = '';
+          //判断是否登录成功
+          $check = Mypublic::setJsoncheck($schedularUrl, $cookie);
 
-        if ($check == true) {
-            $studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
-            $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=" . $studentid;
-            $obligatory = Mypublic::get_obligatory(Utils::get_content($detailUrl, $cookie));
-            echo json_encode($obligatory);
-        }
+          $cookie = dirname(__FILE__).'/cookie.txt';
+		  $obligatory = '';
+
+          if ($check == true) {
+              $studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
+              $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=" . $studentid;
+              $obligatory = Mypublic::get_obligatory(Utils::get_content($detailUrl, $cookie));
+
+              echo json_encode($obligatory);
+          }
 
 	}
 
@@ -403,4 +424,14 @@ class MyController extends Controller
             ], 'openid = :openid')->bindValue(':openid', $openid)->execute();
     }
 
+
+    public function actionCheckstuname()
+    {
+        $openid = Yii::$app->request->post('openid', '');
+        $check = Yii::$app->db->createCommand('select stunumber and password from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+
+        if ($check) {
+            echo json_encode($arrayName = array('state' => $check!='' ? true : false));
+        }
+    }
 }
