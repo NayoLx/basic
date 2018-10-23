@@ -1,9 +1,10 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Lenovo
+ * User: lixuan
  * Date: 2018/8/8
  * Time: 10:35
+ * 方法类
  */
 namespace app\helpers;
 
@@ -20,7 +21,8 @@ class Mypublic
         $datas .= Mypublic::getRT($url) . "&username=" .$user . "&password=" . $pass;
         return $datas;
     }
-//获取random和token
+
+    //获取random和token
     static function getRT($url) {
         $datas="";
         //获取头部cookie
@@ -116,7 +118,7 @@ class Mypublic
     }
 
     static function load($Url, $cookies, $schoolyear, $semester){
-//        Mypublic::get_schedular(Utils::get_content($Url, $cookies));
+        Mypublic::get_schedular(Utils::get_content($Url, $cookies));
         return Mypublic::get_sqlschedular(Utils::get_content($Url, $cookies), $schoolyear, $semester);
     }
 
@@ -309,7 +311,7 @@ class Mypublic
     }
     
 	//获取必修课程
-	static function get_obligatory($page)
+	static function get_obligatory($page, $username)
     {
         $page = iconv('GBK', 'UTF-8', $page);
         $preg_table = "/<table width=\"90%\" class=\"table\" align=\"center\">(.*?)<\/table>/s";
@@ -328,6 +330,11 @@ class Mypublic
             $time = trim($time, "<td> </td>");
             $obligatory[$time][] = $td[1][$i];
         }
+
+        $db_obli = serialize($obligatory);
+        Yii::$app->db->createCommand()->update('student', [
+            'obligatory' => $db_obli
+        ], 'stunumber = :stunum')->bindValue('stunum', $username)->execute();
 
         return $obligatory;
 

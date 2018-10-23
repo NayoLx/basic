@@ -1,9 +1,10 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Lenovo
+ * User: lixuan
  * Date: 2018/8/8
  * Time: 9:26
+ * api类
  */
 namespace app\controllers;
 
@@ -16,42 +17,51 @@ use app\helpers\Utils;
 
 class MyController extends Controller
 {
+//    页面类
 
-    public function actionLogin2()
-    {
-        return $this->render('login2');
-    }
-
-    public function actionMyscgedular()
-    {
-        return $this->render('myscgedular');
-    }
-
-    public function actionMypersonal()
-    {
-        return $this->render('personal');
-    }
-	
-	public function actionMyobligatory()
-    {
-        return $this->render('obligatory');
-    }
-    public function actionMysavedetail()
-    {
-        return $this->render('savedetail');
-    }
-    public function actionMysavebinddetail()
-    {
-        return $this->render('savebinddetail');
-    }
-    public function actionMygetgrade()
-    {
-        return $this->render('getgrade');
-    }
-    public function actionMycheckstuname()
-    {
-        return $this->render('checkstuname');
-    }
+//    public function actionLogin2()
+//    {
+//        return $this->render('login2');
+//    }
+//
+//    public function actionMyscgedular()
+//    {
+//        return $this->render('myscgedular');
+//    }
+//
+//    public function actionMypersonal()
+//    {
+//        return $this->render('personal');
+//    }
+//
+//	  public function actionMyobligatory()
+//    {
+//        return $this->render('obligatory');
+//    }
+//    public function actionMysavedetail()
+//    {
+//        return $this->render('savedetail');
+//    }
+//    public function actionMysavebinddetail()
+//    {
+//        return $this->render('savebinddetail');
+//    }
+//    public function actionMygetgrade()
+//    {
+//        return $this->render('getgrade');
+//    }
+//    public function actionMycheckstuname()
+//    {
+//        return $this->render('checkstuname');
+//    }
+//    public function actionMycheckidcard()
+//    {
+//        return $this->render('checkidcard');
+//    }
+//    public function actionMyisidcard()
+//    {
+//        return $this->render('isidcard');
+//    }
 	/**
 	 * 登陆
 	 * */
@@ -84,7 +94,7 @@ class MyController extends Controller
         if ($test == true){
             $getpass = Yii::$app->db->createCommand('select password from student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
             if ($password == $getpass['password']) {
-                return json_encode($arrayName = array('state'=>true));//获取课表的数据
+                return json_encode($arrayName = array('state' => true));//获取课表的数据
             }
 
             //获取登录时需要的数据
@@ -94,14 +104,14 @@ class MyController extends Controller
             Utils::login_post($loginUrl, $cookie, $logindatas);
 
             //判断是否登录成功
-            $check = Mypublic::setJson2($schedularUrl, $cookie);
+            $check = Mypublic::setJsoncheck($schedularUrl, $cookie);
 
             if ($check == true){
                 Yii::$app->db->createCommand()->update('student',[
-                    'stuNumber' => $username,
+                    'stunumber' => $username,
                     'password' => $password,
                     'cookie' => $cookie_value,
-                ],'stuNumber = :username')->bindValue(':username', $username)->execute();//insert增加到数据库
+                ],'stunumber = :username')->bindValue(':username', $username)->execute();//insert增加到数据库
 
                 //获取studentid
                 $studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
@@ -119,11 +129,11 @@ class MyController extends Controller
             Utils::login_post($loginUrl, $cookie, $logindatas);
 
             //判断是否登录成功
-            $check = Mypublic::setJson2($schedularUrl, $cookie);
+            $check = Mypublic::setJsoncheck($schedularUrl, $cookie);
 
             if ($check == true){
                 Yii::$app->db->createCommand()->insert('student',[
-                    'stuNumber' => $username,
+                    'stunumber' => $username,
                     'password' => $password,
                     'cookie' => $cookie_value,
                 ])->execute();//insert增加到数据库
@@ -240,9 +250,9 @@ class MyController extends Controller
 	public function actionBindpersonal()
 	{
         $openid = Yii::$app->request->post('openid', '');
-	    $getPersonUser = Yii::$app->db->createCommand('select stuNumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+	    $getPersonUser = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
         $getPersonPass = Yii::$app->db->createCommand('select password from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
-        $username = $getPersonUser['stuNumber'];
+        $username = $getPersonUser['stunumber'];
         $password = $getPersonPass['password'];
 
         /*判断数据库里有无重复数据*/
@@ -293,39 +303,56 @@ class MyController extends Controller
 	{
 
         $openid = Yii::$app->request->post('openid', '');
-        $getPersonUser = Yii::$app->db->createCommand('select stuNumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+        $getPersonUser = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
         $getPersonPass = Yii::$app->db->createCommand('select password from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
-        $username = $getPersonUser['stuNumber'];
+        $username = $getPersonUser['stunumber'];
         $password = $getPersonPass['password'];
 
+        /*判断数据库里有无重复数据*/
+        $testx = Yii::$app->db->createCommand('select obligatory from student where stunumber = :username and password = :password')
+            ->bindValue(':username', $username)
+            ->bindValue(':password', $password)
+            ->queryAll();
 
-          $ip = Yii::$app->params['ip'];
-          $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
-          $url = "http://class.sise.com.cn:7001/sise/";//主页URl
-          $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
-          $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
-          $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp"; //主页url
+        if ($testx) {
 
-          //获取登录时需要的数据
-          $logindatas = Mypublic::get_post_data($url, $username, $password, $ip);
-          header("Content-type: text/html; charset=utf-8");
-          //登录
-          Utils::login_post($loginUrl, $cookie, $logindatas);
+            $db_obligatory = unserialize($testx[0]['obligatory']);
+            echo json_encode($db_obligatory);
+        }
+        else {
+            $ip = Yii::$app->params['ip'];
+            $cookie = dirname(__FILE__) . '/cookie.txt';//保存cookie在本地
+            $url = "http://class.sise.com.cn:7001/sise/";//主页URl
+            $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
+            $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
+            $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp"; //主页url
 
-          //判断是否登录成功
-          $check = Mypublic::setJsoncheck($schedularUrl, $cookie);
+            //获取登录时需要的数据
+            $logindatas = Mypublic::get_post_data($url, $username, $password, $ip);
+            header("Content-type: text/html; charset=utf-8");
+            //登录
+            Utils::login_post($loginUrl, $cookie, $logindatas);
 
-          $cookie = dirname(__FILE__).'/cookie.txt';
-		  $obligatory = '';
+            //判断是否登录成功
+            $check = Mypublic::setJsoncheck($schedularUrl, $cookie);
 
-          if ($check == true) {
-              $studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
-              $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=" . $studentid;
-              $obligatory = Mypublic::get_obligatory(Utils::get_content($detailUrl, $cookie));
+            $cookie = dirname(__FILE__) . '/cookie.txt';
+            $obligatory = '';
 
-              echo json_encode($obligatory);
-          }
+            if ($check == true) {
+                $studentid = Mypublic::get_indexpage(Utils::get_content($indexUrl, $cookie));
+                $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=" . $studentid;
+                Mypublic::get_obligatory(Utils::get_content($detailUrl, $cookie), $username);
 
+                $testx = Yii::$app->db->createCommand('select obligatory from student where stunumber = :username and password = :password')
+                    ->bindValue(':username', $username)
+                    ->bindValue(':password', $password)
+                    ->queryAll();
+
+                $db_obligatory = unserialize($testx[0]['obligatory']);
+                echo json_encode($db_obligatory);
+            }
+        }
 	}
 
     /**
@@ -334,7 +361,7 @@ class MyController extends Controller
     public function actionPersonal()
     {
 //        $openid = Yii::$app->request->post('openid', '');
-//	    $getPersonUser = Yii::$app->db->createCommand('select stuNumber from wxdetail where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+//	    $getPersonUser = Yii::$app->db->createCommand('select stunumber from wxdetail where openid = :openid')->bindValue(':openid', $openid)->queryOne();
 
         $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp";
         $cookie = dirname(__FILE__).'/cookie.txt';
@@ -405,7 +432,7 @@ class MyController extends Controller
     }
 
     /**
-     * 绑定信息
+     * 绑定微信信息
      */
     public function actionSavebinddetail()
     {
@@ -417,14 +444,16 @@ class MyController extends Controller
 
         Yii::$app->db->createCommand()->update('wxdeatil', [
                 'openid' => $openid,
-                'stuNumber' => $usernumber,
+                'stunumber' => $usernumber,
                 'password' => $password ,
                 'phone' => $phone,
                 'is_bind' => $isbind,
             ], 'openid = :openid')->bindValue(':openid', $openid)->execute();
     }
 
-
+    /**
+     * 检查微信账号是否绑定学号
+     * */
     public function actionCheckstuname()
     {
         $openid = Yii::$app->request->post('openid', '');
@@ -432,6 +461,44 @@ class MyController extends Controller
 
         if ($check) {
             echo json_encode($arrayName = array('state' => $check!='' ? true : false));
+        }
+    }
+
+    /**
+     * 验证身份证是否与学生数据库里相符
+     */
+    public function actionIsidcard()
+    {
+        $openid = Yii::$app->request->post('openid', '');
+        $getPersonUser = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+        $idcard = Yii::$app->request->post('idcard', '');
+        $name = Yii::$app->request->post('name', '');
+
+        $usernumber = $getPersonUser['stunumber'];
+        $db_idcard = Yii::$app->db->createCommand('select idcard from student where stunumber = :usernumber')->bindValue(':usernumber', $usernumber)->queryOne();
+        $db_name = Yii::$app->db->createCommand('select stuname from student where stunumber = :usernumber')->bindValue(':usernumber', $usernumber)->queryOne();
+
+        if ($idcard == $db_idcard['idcard'] && $name == $db_name['stuname']) {
+            Yii::$app->db->createCommand()->update('wxdeatil', [
+                'is_idcard_check' => 'true',
+            ], 'openid = :openid')->bindValue(':openid', $openid)->execute();
+
+            return 'true';
+        }
+
+    }
+
+    /**
+     * 检查是否实名
+     */
+    public function actionCheckidcard()
+    {
+        $openid = Yii::$app->request->post('openid', '');
+
+        $check = Yii::$app->db->createCommand('select is_idcard_check from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+
+        if ($check == true) {
+            echo json_encode($arrayName = array('state' => true));
         }
     }
 }
