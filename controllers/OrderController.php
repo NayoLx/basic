@@ -66,13 +66,14 @@ class OrderController extends Controller
        $status = Yii::$app->request->post('status', '');
        $stunumber = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
 
-       /*0--全部订单  1--我发起的订单  2--我接的单*/
-       if ($status == 0) {
+       /*0--关于我的全部订单  1--我发起的订单  2--我接的单  10--附近发出的全部订单*/
+       if ($status == '0') {
           $order = Yii::$app->db->createCommand('select * from order_detail where (user_stunum = :stunumber or staff_stunum = :stunum) and status < :status ')
               ->bindValue(':stunumber', $stunumber['stunumber'])
               ->bindValue(':stunum', $stunumber['stunumber'])
               ->bindValue(':status', '4')
               ->queryAll();
+
           return json_encode($order);
        }
        else if ($status == '1') {
@@ -80,13 +81,22 @@ class OrderController extends Controller
                ->bindValue(':stunumber', $stunumber['stunumber'])
                ->bindValue(':status', '4')
                ->queryAll();
+
            return json_encode($order);
        }
-       else {
+       else if ($status == '2') {
            $order = Yii::$app->db->createCommand('select * from order_detail where staff_stunum = :stunum and status < :status ')
                ->bindValue(':stunum', $stunumber['stunumber'])
                ->bindValue(':status', '4')
                ->queryAll();
+
+           return json_encode($order);
+       }
+       else if($status == '10') {
+           $order = Yii::$app->db->createCommand('select * from order_detail where  status = :status ')
+               ->bindValue(':status', '1')
+               ->queryAll();
+
            return json_encode($order);
        }
    }
@@ -112,5 +122,12 @@ class OrderController extends Controller
        }
    }
 
+   /**
+    * 更改订单状态(改
+    */
+   public function actionChangeorder()
+   {
+       $order_no = Yii::$app->request->post('order_no', '');
 
+   }
 }

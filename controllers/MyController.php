@@ -160,9 +160,14 @@ class MyController extends Controller
     public function actionAcgedular()
     {
         /***********************获取不同学期的课表***************************/
+        $e = new \stdClass();
         $username = Yii::$app->request->post('stunumber', '');
         $schoolyear = Yii::$app->request->post('schoolyear', '');
         $semester = Yii::$app->request->post('semester', '');
+
+        $e -> username = $username;
+        $e -> schoolyear = $schoolyear;
+        $e -> semester = $semester;
 
         $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
 
@@ -173,20 +178,31 @@ class MyController extends Controller
             ->bindValue(':semster', $semester)
             ->queryAll();
 
+        $testx = Yii::$app->db->createCommand('select monday, tuesday, wednesday, thursday, friday, saturday, sunday from scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
+            ->bindValue(':username', $username)
+            ->bindValue(':schoolyear', $schoolyear)
+            ->bindValue(':semster', $semester)
+            ->queryAll();
+
+        $e -> classes = $testx;
+
         if ($test == true) {
-            return json_encode($test);
+            return json_encode($e);
         }
         else {
             if (!empty($schoolyear) && !empty($semester)) {
                 $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp?schoolyear=".$schoolyear."&semester=".$semester; //课程表url
                 Mypublic::get_sqlschedular(Utils::get_content($schedularUrl, $cookie), $schoolyear, $semester);
 
-                $testx = Yii::$app->db->createCommand('select * from scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
+                $testx = Yii::$app->db->createCommand('select monday, tuesday, wednesday, thursday, friday, saturday, sunday from scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
                     ->bindValue(':username', $username)
                     ->bindValue(':schoolyear', $schoolyear)
                     ->bindValue(':semster', $semester)
                     ->queryAll();
-                return json_encode($testx);
+
+                $e -> classes = $testx;
+
+                return json_encode($e);
 
 //                Mypublic::setJson($schedularUrl, $cookie,  $schoolyear, $semester);
             }
