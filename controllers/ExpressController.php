@@ -13,7 +13,7 @@ use yii\db\Exception;
 use yii\web\Controller;
 use app\helpers\Utils;
 
-class ExpressController extends controller
+class ExpressController extends Controller
 {
     /**
      * 即时查询

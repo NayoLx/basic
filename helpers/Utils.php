@@ -8,7 +8,10 @@
  */
 class Utils
 {
-    //获取头部信息
+
+    /**
+     * 获取头部信息
+     */
     static function getResponse($url) {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, true); //返回头信息
@@ -18,7 +21,10 @@ class Utils
         curl_close($ch);
         return $content;
     }
-    //登录
+
+    /**
+     * 登录
+     */
     static function login_post($loginurl, $cookie, $post) {
         $curl = curl_init(); //初始化curl模块
         curl_setopt($curl, CURLOPT_URL, $loginurl); //登录提交的地址
@@ -32,7 +38,10 @@ class Utils
         curl_close($curl);
         return $rs;
     }
-    //获取页面和课表
+
+    /**
+     * 获取页面和课表
+     */
     static function get_content($Url, $cookies) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $Url); //定义地址
@@ -45,7 +54,10 @@ class Utils
         curl_close($ch);
         return $rs;
     }
-    /* 发送json格式的数据，到api接口 -xzz0704  */
+
+    /**
+     *发送json格式的数据，到api接口 -xzz0704
+     */
     static function https_curl_json($url, $data, $type){
         if($type=='json'){//json $_POST=json_decode(file_get_contents('php://input'), TRUE);
             $headers = array("'content-type': 'application/json'");
