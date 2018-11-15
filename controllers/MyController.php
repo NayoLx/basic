@@ -17,22 +17,24 @@ use app\helpers\Utils;
 
 class MyController extends Controller
 {
-//    页面类
+    /**
+     * 页面类
+     */
 
-//    public function actionLogin2()
-//    {
-//        return $this->render('login2');
-//    }
-//
-//    public function actionMyscgedular()
-//    {
-//        return $this->render('myscgedular');
-//    }
-//
-//    public function actionMypersonal()
-//    {
-//        return $this->render('personal');
-//    }
+    public function actionLogin2()
+    {
+        return $this->render('login2');
+    }
+
+    public function actionMyscgedular()
+    {
+        return $this->render('myscgedular');
+    }
+
+    public function actionMypersonal()
+    {
+        return $this->render('personal');
+    }
 //
 //	  public function actionMyobligatory()
 //    {
