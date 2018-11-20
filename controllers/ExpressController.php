@@ -21,13 +21,16 @@ class ExpressController extends Controller
      * EBusinessID快递鸟用户id, Appkey快递api密钥
      * ShipperCode快递公司编码，LogisticCode物流订单号 '266246489521'
      * status物流状态: 0-无轨迹，1-已揽收，2-在途中，3-签收,
+     * $EBusinessID = '1398770'; $AppKey = 'ed1f2c12-2fe3-4ad5-9f78-0e7f745fde7d';
+     * $ReqURL = 'http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx';  $url = 'http://api.kdniao.com/api/dist';
      */
     public function actionGetordertraces()
     {
-        $EBusinessID = '1398770';
-        $AppKey = 'ed1f2c12-2fe3-4ad5-9f78-0e7f745fde7d';
-        $ReqURL = 'http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx';
-        $url = 'http://api.kdniao.com/api/dist';
+
+        $EBusinessID = Yii::$app->params['EBusinessID'];
+        $AppKey = Yii::$app->params['AppKey'];
+        $ReqURL = Yii::$app->params['ReqURL'];
+        $url = Yii::$app->params['kuaidi_url'];
 
 
 //        $shipper = 'ZTO';

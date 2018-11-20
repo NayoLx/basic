@@ -125,4 +125,14 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+    /**
+     * 日志控制器
+     */
+    public function actionLog() {
+//        Yii::trace('trace log message');
+        Yii::info('info log message');
+        Yii::warning('warning log message');
+        Yii::error('error log message');
+    }
 }

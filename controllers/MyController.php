@@ -66,18 +66,25 @@ class MyController extends Controller
 //    }
 	/**
 	 * 登陆
+     * $url = "http://class.sise.com.cn:7001/sise/";//主页URl
+     * $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
+     * $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
+     * $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp"; //主页url
 	 * */
     public function actionLoginpost()
     {
+        $e = new \stdClass();
+
         $username = Yii::$app->request->post('username', '');
         $password = Yii::$app->request->post('password', '');
 
         $ip = Yii::$app->params['ip'];
         $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
-        $url = "http://class.sise.com.cn:7001/sise/";//主页URl
-        $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
-        $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
-        $indexUrl = "http://class.sise.com.cn:7001/sise/module/student_states/student_select_class/main.jsp"; //主页url
+        $url =Yii::$app->params['url'];
+        $loginUrl = Yii::$app->params['loginUrl']; //登录url
+        $schedularUrl = Yii::$app->params['schedularUrl']; //课程表url
+        $indexUrl = Yii::$app->params['indexUrl']; //主页url
+
 
         $content = Utils::getResponse($url);//获取头部内容
         $cookie_name = "/JSESSIONID=(.*?)!/";
@@ -209,7 +216,7 @@ class MyController extends Controller
 //                Mypublic::setJson($schedularUrl, $cookie,  $schoolyear, $semester);
             }
             else {
-                $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
+                $schedularUrl = Yii::$app->params['schedularUrl']; //课程表url
                 Mypublic::get_sqlschedular(Utils::get_content($schedularUrl, $cookie), $schoolyear, $semester);
                 Mypublic::load($schedularUrl, $cookie, $schoolyear, $semester);
             }
@@ -231,8 +238,7 @@ class MyController extends Controller
         $cookie = dirname(__FILE__).'/cookie.txt';//保存cookie在本地
         $url = "http://class.sise.com.cn:7001/sise/";//主页URl
         $loginUrl = "http://class.sise.com.cn:7001/sise/login_check_login.jsp"; //登录url
-        $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp"; //课程表url
-
+        $schedularUrl = Yii::$app->params['schedularUrl']; //课程表url
 
         //获取登录时需要的数据
         $logindatas = Mypublic::get_post_data($url, $username, $password, $ip);

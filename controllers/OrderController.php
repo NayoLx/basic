@@ -204,10 +204,12 @@ class OrderController extends Controller
     */
    public function actionGetwxapi()
    {
-       $touser = Yii::$app->request->post('touser', '');
-       $template_id = Yii::$app->request->post('template_id', '');
-       $form_id = Yii::$app->request->post('form_id', '');
-       $keyword1 = Yii::$app->request->post('keyword1', '');
+       $e = new \stdClass();
+
+       $e -> touser = Yii::$app->request->post('touser', '');
+       $e -> template_id = Yii::$app->request->post('template_id', '');
+       $e -> form_id = Yii::$app->request->post('form_id', '');
+       $keyword = Yii::$app->request->post('keyword1', '');
        $keyword2 = Yii::$app->request->post('keyword2', '');
        $keyword3 = Yii::$app->request->post('keyword3', '');
        $keyword4 = Yii::$app->request->post('keyword4', '');
@@ -219,9 +221,10 @@ class OrderController extends Controller
 
        $url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + $access_token;
 
+       return json_encode($e);
        $value = array(
            'keyword1'=>array(
-             'value' => $keyword1,
+             'value' => $keyword,
            ),
            'keyword2'=>array(
                'value' => $keyword2,
@@ -245,6 +248,7 @@ class OrderController extends Controller
                'value' => $keyword8,
            )
        );
+
 
        $dd = array();
 

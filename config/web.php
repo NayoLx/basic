@@ -35,10 +35,14 @@ $config = [
             'useFileTransport' => true,
         ],
         'log' => [
+            //设置 flushInterval 和 exportInteval 属性的值为 1 所有日志消息立即导出在日志文件中
+//            'flushInterval' => 1,
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
+//                    'exportInterval' => 1,
+                    'logVars' => [],
                     'levels' => ['error', 'warning'],
                 ],
             ],
