@@ -35,6 +35,11 @@ class MyController extends Controller
     {
         return $this->render('personal');
     }
+
+    public function actionOrderlist()
+    {
+        return $this->render('orderList');
+    }
 //
 //	  public function actionMyobligatory()
 //    {
@@ -524,5 +529,13 @@ class MyController extends Controller
         if ($check == true) {
             echo json_encode($arrayName = array('state' => true));
         }
+    }
+
+    /**
+     * 获取手机号
+     */
+    public function actionGetphone()
+    {
+
     }
 }

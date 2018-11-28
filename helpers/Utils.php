@@ -60,7 +60,7 @@ class Utils
      */
     static function https_curl_json($url, $data, $type){
         if($type=='json'){//json $_POST=json_decode(file_get_contents('php://input'), TRUE);
-            $headers = array("'content-type': 'application/json'");
+            $headers = array("Content-type: application/json;charset=UTF-8","Accept: application/json","Cache-Control: no-cache", "Pragma: no-cache");
             $data = json_encode($data);
         }
 
@@ -71,7 +71,7 @@ class Utils
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
         if (!empty($data)){
             curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS,$data);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         }
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers );

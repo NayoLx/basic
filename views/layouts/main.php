@@ -39,7 +39,7 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => '首页', 'url' => ['/site/index']],
-            ['label' => '订单列表', 'url' => ['/my/mypersonal']],
+            ['label' => '订单列表', 'url' => ['/my/orderlist']],
             ['label' => '快递信息', 'url' => ['/site/contact']],
             ['label' => '系统配置', 'url' => ['/site/contact']],
             Yii::$app->user->isGuest ? (

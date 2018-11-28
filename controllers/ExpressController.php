@@ -73,5 +73,19 @@ class ExpressController extends Controller
         return json_encode($kuaiditype);
     }
 
+    public function actionBaiduapi()
+    {
+        require_once 'AipOcr.php';
+
+        // 你的 APPID AK SK
+        $APP_ID = Yii::$app->params['AppID'];
+        $API_KEY = Yii::$app->params['API Key'];
+        $SECRET_KEY = Yii::$app->params['Secret Key'];
+
+        $client = new AipOcr(APP_ID, API_KEY, SECRET_KEY);
+
+
+    }
+
 
 }
