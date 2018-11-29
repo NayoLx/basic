@@ -10,7 +10,7 @@ use yii\helpers\Html;
 use app\widgets\linkpage;
 use app\assets\AppAsset;
 
-$this->title = 'orderList';
+$this->title = 'orderView';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

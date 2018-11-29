@@ -36,10 +36,7 @@ class MyController extends Controller
         return $this->render('personal');
     }
 
-    public function actionOrderlist()
-    {
-        return $this->render('orderList');
-    }
+
 //
 //	  public function actionMyobligatory()
 //    {

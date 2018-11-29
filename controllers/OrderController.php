@@ -15,6 +15,10 @@ use app\helpers\Utils;
 
 class OrderController extends Controller
 {
+    public function actionOrderlist()
+    {
+        return $this->render('orderList');
+    }
     /**
      * 保存订单详情 （增
      */
@@ -197,6 +201,22 @@ class OrderController extends Controller
        $e->success = false;
        return $e;
 
+   }
+
+
+   /**
+    * 后台 获取所有订单
+    */
+   public function actionOrderall()
+   {
+      $e = new \stdClass();
+//      $e -> orderid = Yii::$app->request->post('orderid', '');
+//      $e -> user_name = Yii::$app->request->post('name', '');
+//      $e -> user_ipone = Yii::$app->request->post('user_ipone', '');
+
+      $e -> orderlist = Yii::$app->db->createCommand('select * from order_detail')->queryAll();
+
+      return json_encode($e);
    }
 
    /***
