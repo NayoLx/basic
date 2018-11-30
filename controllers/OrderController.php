@@ -15,10 +15,19 @@ use app\helpers\Utils;
 
 class OrderController extends Controller
 {
+    /**
+     * @return string
+     * 页面类
+     */
     public function actionOrderlist()
     {
         return $this->render('orderList');
     }
+    public function actionOrderdetail()
+    {
+        return $this->render('orderdetail');
+    }
+
     /**
      * 保存订单详情 （增
      */
@@ -210,13 +219,27 @@ class OrderController extends Controller
    public function actionOrderall()
    {
       $e = new \stdClass();
-//      $e -> orderid = Yii::$app->request->post('orderid', '');
-//      $e -> user_name = Yii::$app->request->post('name', '');
-//      $e -> user_ipone = Yii::$app->request->post('user_ipone', '');
-
       $e -> orderlist = Yii::$app->db->createCommand('select * from order_detail')->queryAll();
 
       return json_encode($e);
+   }
+
+    /**
+     * 后台 订单编号模糊查询
+     */
+   public function actionOrderfuzzysearch()
+   {
+       $e = new \stdClass();
+       $order_val = Yii::$app->request->post('order_val', '');
+
+       if ($order_val != '') {
+           $e -> orderlist = Yii::$app->db->createCommand(" select * from order_detail where order_no LIKE :order_val ")->bindValue(':order_val', '%'.$order_val)->queryAll();
+       }
+       else {
+           $e -> orderlist = Yii::$app->db->createCommand('select * from order_detail')->queryAll();
+       }
+
+       return json_encode($e);
    }
 
    /***

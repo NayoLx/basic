@@ -10,7 +10,7 @@ use yii\helpers\Html;
 use app\widgets\linkpage;
 use app\assets\AppAsset;
 
-$this->title = 'orderList';
+$this->title = '订单列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -21,26 +21,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tbody>
                     <tr >
                         <td width="10%" class="text-right">订单编号：</td>
-                        <td width="10%"  class="text-left"><input type="text" class="form-control" name="order_no" id="order_no" value="<?php if(!empty($gets['order_no'])){ echo $gets['order_no']; } ?>"></td>
-                        <td width="10%"  class="text-right">下单时间（起）：</td>
-                        <td width="20%" class="text-left"><input type="date" class="form-control" name="order_begin" id="order_begin" value="<?php if(!empty($gets['order_begin'])){ echo $gets['order_begin']; } ?>"></td>
-                        <td width="10%"  class="text-right">下单时间（止）：</td>
-                        <td width="20%" class="text-left"><input type="date" class="form-control" name="order_end" id="order_end" value="<?php if(!empty($gets['order_end'])){ echo $gets['order_end']; } ?>"></td>
+                        <td width="10%"  class="text-left"><input type="text" class="form-control" name="order_no" id="order_no" ></td>
+                        <td width="10%"  class="text-right">用户姓名：</td>
+                        <td width="20%" class="text-left"><input type="text" class="form-control" name="order_begin" id="user_name"></td>
+                        <td width="10%"  class="text-right">用户学号：</td>
+                        <td width="20%" class="text-left"><input type="text" class="form-control" name="order_end" id="user_id" ></td>
                     </tr>
                     <tr >
-                        <td class="text-right">客户姓名：</td>
-                        <td class="text-left"><input type="text" class="form-control" name="customer_name" id="customer_name" value="<?php if(!empty($gets['customer_name'])){ echo $gets['customer_name']; } ?>"></td>
-                        <td class="text-right">客户电话：</td>
-                        <td class="text-left"><input type="text" class="form-control" name="customer_phone" id="customer_phone" value="<?php if(!empty($gets['customer_phone'])){ echo $gets['customer_phone']; } ?>"></td>
-                        <td class="text-right">设备拥有者：</td>
-                        <td class="text-left"><input type="text" class="form-control" name="owner_name" id="owner_name" value="<?php if(!empty($gets['owner_name'])){ echo $gets['owner_name']; } ?>"></td>
+                        <td class="text-right">用户电话：</td>
+                        <td class="text-left"><input type="text" class="form-control" name="customer_phone" id="user_phone" ></td>
+                        <td class="text-right">接单人姓名：</td>
+                        <td class="text-left"><input type="text" class="form-control" name="customer_name" id="staff_name"></td>
+                        <td class="text-right">接单人学号：</td>
+                        <td class="text-left"><input type="text" class="form-control" name="customer_name" id="staff_id"></td>
                     </tr>
 
                     <tr class="search">
                         <td colspan="6"  class="text-center">
-                            <button type="submit" class="btn btn-primary btncls" id="search"><i class="glyphicon glyphicon-search"></i> 查 询  </button>
-                            <a class="btn btn-default btncls" href="">重&nbsp;&nbsp;&nbsp;&nbsp;置</a>
-                            <a class="btn btn-success btncls" id="exportBtn" href="javascript:void(0)">导出订单报表</a>
+                            <a type="submit" class="btn btn-primary btncls" id="search">查 询  </a>
+                            <a class="btn btn-default btncls" href="">重 置 </a>
                         </td>
                     </tr>
                 </tbody>
@@ -96,7 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         {{order_type}}
                     </td>
                     <td >
-                        <a class="btn btn-primary" style="margin: 4px;" >查看详情</a>
+                        <a class="btn btn-primary" style="margin: 4px;" id = "todetail" value = "{{id}}" href = "index.php?r=order/orderdetail">查看详情</a>
                         {{#js_if "this.status == 1" }}
                            <a class="btn btn-success" style="margin: 4px;" >平台派单</a>
                         {{/js_if}}
@@ -115,7 +114,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script type="text/javascript">
    $(function () {
-     
+
+       /**访问api层专用*/
      function templateMethod(data) {
         var template = $('#template').html();
         var compiled = Template7.compile(template);
@@ -123,14 +123,40 @@ $this->params['breadcrumbs'][] = $this->title;
         $('#content').html(htmlStr);
      }
 
+     /**全局显示变量*/
      var data = [];
+
      $.get('?r=order/orderall',
          function (data, status) {
              data = data;
              templateMethod(data);
          },'json'
      );
-   });
+
+     $('#search').click(function () {
+         var order_no = $('#order_no').val();
+
+         $.post('?r=order/orderfuzzysearch', {
+             order_val: order_no
+             },
+             function (data) {
+             if (data) {
+                 data = data;
+                 templateMethod(data);
+             }
+             },'json'
+         )
+     });
+   })
+
+    $(function () {
+
+        $('#todetail').click(function () {
+            var id = $('#todetail').val();
+            session_start();
+            $_SESSION['id'] = id;
+        })
+    })
 </script>
 
 <div id="content">
