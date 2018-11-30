@@ -95,7 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         {{order_type}}
                     </td>
                     <td >
-                        <a class="btn btn-primary" style="margin: 4px;" id = "todetail" value = "{{id}}" href = "index.php?r=order/orderdetail">查看详情</a>
+                        <a class="btn btn-primary" style="margin: 4px;" id="todetail" value = "{{id}}" href="?r=order/orderdetail">查看详情</a>
                         {{#js_if "this.status == 1" }}
                            <a class="btn btn-success" style="margin: 4px;" >平台派单</a>
                         {{/js_if}}
@@ -147,16 +147,19 @@ $this->params['breadcrumbs'][] = $this->title;
              },'json'
          )
      });
+
+     // $('#todetail').click(function () {
+     //     console.log("1111");
+     //     tojump();
+     // });
+     //
+     // function tojump() {
+     //     var id = $('#todetail').value();
+     //     url = '?r=order/orderdetail?id=' + id ;
+     //     window.location.href = url ;
+     // };
+
    })
-
-    $(function () {
-
-        $('#todetail').click(function () {
-            var id = $('#todetail').val();
-            session_start();
-            $_SESSION['id'] = id;
-        })
-    })
 </script>
 
 <div id="content">

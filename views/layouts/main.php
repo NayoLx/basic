@@ -40,7 +40,7 @@ AppAsset::register($this);
         'items' => [
             ['label' => '首页', 'url' => ['/site/index']],
             ['label' => '订单列表', 'url' => ['/order/orderlist']],
-            ['label' => '快递信息', 'url' => ['/site/contact']],
+            ['label' => '用户列表', 'url' => ['/user/index']],
             ['label' => '系统配置', 'url' => ['/site/contact']],
             Yii::$app->user->isGuest ? (
                 ['label' => '登陆', 'url' => ['/my/login2']]

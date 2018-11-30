@@ -25,7 +25,8 @@ class OrderController extends Controller
     }
     public function actionOrderdetail()
     {
-        return $this->render('orderdetail');
+        $id = Yii::$app->request->post('id');
+        return $this->render('orderdetail', array('id' => $id));
     }
 
     /**

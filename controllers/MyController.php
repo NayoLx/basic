@@ -20,7 +20,6 @@ class MyController extends Controller
     /**
      * 页面类
      */
-
     public function actionLogin2()
     {
         return $this->render('login2');
@@ -36,36 +35,11 @@ class MyController extends Controller
         return $this->render('personal');
     }
 
+    public function actionUserindex()
+    {
+        return $this->render('index');
+    }
 
-//
-//	  public function actionMyobligatory()
-//    {
-//        return $this->render('obligatory');
-//    }
-//    public function actionMysavedetail()
-//    {
-//        return $this->render('savedetail');
-//    }
-//    public function actionMysavebinddetail()
-//    {
-//        return $this->render('savebinddetail');
-//    }
-//    public function actionMygetgrade()
-//    {
-//        return $this->render('getgrade');
-//    }
-//    public function actionMycheckstuname()
-//    {
-//        return $this->render('checkstuname');
-//    }
-//    public function actionMycheckidcard()
-//    {
-//        return $this->render('checkidcard');
-//    }
-//    public function actionMyisidcard()
-//    {
-//        return $this->render('isidcard');
-//    }
 	/**
 	 * 登陆
      * $url = "http://class.sise.com.cn:7001/sise/";//主页URl

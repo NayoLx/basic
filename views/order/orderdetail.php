@@ -11,6 +11,8 @@ use app\widgets\linkpage;
 use app\assets\AppAsset;
 
 $this->title = '订单详情';
+$this->params['breadcrumbs'][] = '订单管理';
+$this->params['breadcrumbs'][] = ['label' => '订单列表', 'url' => ['/order/orderlist']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -44,3 +46,9 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 </div>
+
+<script type="text/javascript">
+    $(function () {
+
+    })
+</script>
