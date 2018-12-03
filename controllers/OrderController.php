@@ -158,6 +158,7 @@ class OrderController extends Controller
    public function actionChangeorder()
    {
        $e = new \stdClass();
+       $e -> success = false;
        $order_no = Yii::$app->request->post('order_no', '');
        $openid = Yii::$app->request->post('openid', '');
        $status = Yii::$app->request->post('status', '');
@@ -169,11 +170,10 @@ class OrderController extends Controller
        $stuname = Yii::$app->db->createCommand('select stuname from student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
        $time = date('y-m-d H:i:s',time());
 
-       echo $time;
        /**********2--接单中 3--处理中 4--已完成********/
 
        if ($status == 2) {
-           $e->success = true;
+           $e-> success = true;
            Yii::$app->db->createCommand()->update('order_detail', [
                'status' => '2',
                'staff_stunum' => $stunumber['stunumber'],
@@ -186,7 +186,7 @@ class OrderController extends Controller
            return json_encode($e);
        }
        elseif ($status == 3) {
-           $e->success = true;
+           $e-> success = true;
            Yii::$app->db->createCommand()->update('order_detail', [
                'status' => '3',
                'status_labal' => '处理中',
@@ -197,7 +197,7 @@ class OrderController extends Controller
            return json_encode($e);
        }
        elseif ($status == 4) {
-           $e->success = true;
+           $e-> success = true;
            Yii::$app->db->createCommand()->update('order_detail', [
                'status' => '4',
                'status_labal' => '已完成',
@@ -208,7 +208,7 @@ class OrderController extends Controller
            return json_encode($e);
        }
 
-       $e->success = false;
+
        return $e;
 
    }
@@ -243,41 +243,44 @@ class OrderController extends Controller
        return json_encode($e);
    }
 
-   /***
+   /**
+    * @模板消息
     * 微信Api的获取与数据获取
     */
    public function actionGetwxapi()
    {
        $e = new \stdClass();
+       $e -> success = false;
 
-       $e -> touser = Yii::$app->request->post('touser', '');
-       $e -> template_id = Yii::$app->request->post('template_id', '');
-       $e -> form_id = Yii::$app->request->post('form_id', '');
-       $keyword = Yii::$app->request->post('keyword1', '');
-       $keyword2 = Yii::$app->request->post('keyword2', '');
-       $keyword3 = Yii::$app->request->post('keyword3', '');
-       $keyword4 = Yii::$app->request->post('keyword4', '');
-       $keyword5 = Yii::$app->request->post('keyword5', '');
-       $keyword6 = Yii::$app->request->post('keyword6', '');
-       $keyword7 = Yii::$app->request->post('keyword7', '');
-       $keyword8 = Yii::$app->request->post('keyword8', '');
+       $touser = Yii::$app->request->post('touser', '');
+       $template_id = Yii::$app->request->post('template_id', '');
+       $form_id = Yii::$app->request->post('form_id', '');
+       $keyword1 = Yii::$app->request->post('keyword1', '');  //订单号
+       $stu = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $touser)->queryOne();
+       $keyword2 = Yii::$app->db->createCommand('select stuname from student where stunumber = :stunumber')->bindValue(':stunumber', $stu['stunumber'])->queryOne(); //接单人名称
+       $keyword3 = date('y-m-d H:i:s',time()); //接单时间
+       $keyword4 = Yii::$app->db->createCommand('select phone from wxdeatil where openid = :openid')->bindValue(':openid', $touser)->queryOne(); //电话
+       $keyword5 = ''; //微信号
+       $keyword6 = Yii::$app->request->post('keyword6', '');  //下单时间
+       $keyword7 = Yii::$app->request->post('keyword7', '');  //客户名称
+       $keyword8 = ''; //客户电话
        $access_token = Yii::$app->request->post('access_token', '');
 
-       $url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + $access_token;
+       $url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' . $access_token;
 
-       return json_encode($e);
+//       return json_encode('https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token='. $access_token);
        $value = array(
            'keyword1'=>array(
-             'value' => $keyword,
+             'value' => $keyword1,
            ),
            'keyword2'=>array(
-               'value' => $keyword2,
+               'value' => $keyword2['stuname'],
            ),
            'keyword3'=>array(
                'value' => $keyword3,
            ),
            'keyword4'=>array(
-               'value' => $keyword4,
+               'value' => $keyword4['phone'],
            ),
            'keyword5'=>array(
                'value' => $keyword5,
@@ -295,18 +298,15 @@ class OrderController extends Controller
 
 
        $dd = array();
+       $data = array();
 
        $dd['touser'] = $touser;
        $dd['template_id'] = $template_id;
-       $dd['page'] = '';
+       $dd['page'] = Yii::$app->request->post('page', '');;
        $dd['form_id'] = $form_id;
+       $dd['data'] = $value;
 
-       $dd['value'] = $value;
-
-       $dd['color']='';
-       $dd['emphasis_keyword']='';
-
-
+//       return json_encode($dd);
        $result = utils::https_curl_json($url, $dd, 'json');
 
        if($result){
@@ -314,7 +314,37 @@ class OrderController extends Controller
        }else{
            echo json_encode(array('state'=>5,'msg'=>$result));
        }
+
+//       $user_stunum =  Yii::$app->request->post('user_stunum', '');
+//       $userid = Yii::$app->db->createCommand('select openid from wxdeatil where stunumber = :stunumber')->bindValue(':stunumber', $user_stunum)->queryOne();
+//
+//       $data['touser'] = $userid['openid'];
+//
+//       if ($data['touser'] == '') {
+//           return json_encode($e);
+//       }
+//       $data['template_id'] = $template_id;
+//       $data['page'] = Yii::$app->request->post('page', '');;
+//       $data['form_id'] = $form_id;
+//       $data['data'] = $value;
+//
+//       self::sendMessageUser($data, $url);
+
    }
 
 
+   /**
+    * @模板消息
+    *
+    */
+   public function sendMessageUser($data, $url)
+   {
+       $result = utils::https_curl_json($url, $data, 'json');
+
+//       if($result){
+//           echo json_encode(array('state'=>5,'msg'=>$result));
+//       }else{
+//           echo json_encode(array('state'=>5,'msg'=>$result));
+//       }
+   }
 }

@@ -60,7 +60,7 @@ class Utils
      */
     static function https_curl_json($url, $data, $type){
         if($type=='json'){//json $_POST=json_decode(file_get_contents('php://input'), TRUE);
-            $headers = array("Content-type: application/json;charset=UTF-8","Accept: application/json","Cache-Control: no-cache", "Pragma: no-cache");
+            $headers = array("'content-type': 'application/json'");
             $data = json_encode($data);
         }
 

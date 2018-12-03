@@ -56,12 +56,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <thead>
                     <tr>
                         <th style="width:6%;">订单ID</th>
-                        <th style="width:40%;">订单信息</th>
+                        <th style="width:37%;">订单信息</th>
                         <th style="width:12%;">下单时间</th>
                         <th style="width:7%;">订单状态</th>
-                        <th style="width:7%;">接单人员</th>
+                        <th style="width:15%;">接单人员</th>
                         <th style="width:8%;">订单类型</th>
-                        <th style="width:20%;">操作</th>
+                        <th style="width:15%;">操作</th>
                     </tr>
                 </thead>
                 {{#each orderlist}}
