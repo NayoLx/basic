@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'versionCode'=> "（V 1.0.8 ）chance 17",// 版本号
     'adminEmail' => '690575679@qq.com',
 
     /**
