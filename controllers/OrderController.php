@@ -21,12 +21,21 @@ class OrderController extends Controller
      */
     public function actionOrderlist()
     {
-        return $this->render('orderList');
+        $order = $this->fuzzysearch();
+        return $this->render('orderList', $order);
     }
+
     public function actionOrderdetail()
     {
-        $id = Yii::$app->request->post('id');
-        return $this->render('orderdetail', array('id' => $id));
+        $request = \yii::$app->request;
+        $id = intval($request->get('id'));
+        $params = array();
+
+        $order_data = Yii::$app->db->createCommand('select * from order_detail where id = :id')->bindValue(':id', $id)->queryOne();
+        $params['data'] = $order_data;
+
+
+        return $this->render('orderdetail', $params);
     }
 
     /**
@@ -219,29 +228,62 @@ class OrderController extends Controller
     */
    public function actionOrderall()
    {
-      $e = new \stdClass();
-      $e -> orderlist = Yii::$app->db->createCommand('select * from order_detail')->queryAll();
-
-      return json_encode($e);
+       $parms = Yii::$app->db->createCommand('select * from order_detail')->queryAll();
+      return $parms;
    }
 
     /**
      * 后台 订单编号模糊查询
      */
-   public function actionOrderfuzzysearch()
+   public function fuzzysearch()
    {
-       $e = new \stdClass();
-       $order_val = Yii::$app->request->post('order_val', '');
+       $request = \yii::$app->request;
+       $order_no = $request->get('order_no');
+       $user_name = $request->get('user_name');
+       $user_id = $request->get('user_id');
+       $user_phone = $request->get('user_phone');
+       $staff_name = $request->get('staff_name');
+       $staff_id = $request->get('staff_id');
+       /**
+        * 查询过滤处理
+        */
+       $order= [];
+       $get = [];
+       $get['order_no'] = empty($order_no) ? "" : $order_no;
+       $get['user_name'] = empty($user_name) ? "" : $user_name;
+       $get['user_id'] = empty($user_id) ? "" : $user_id;
+       $get['user_phone'] = empty($user_phone) ? "" : $user_phone;
+       $get['staff_name'] = empty($staff_name) ? "" : $staff_name;
+       $get['staff_id'] = empty($staff_id) ? "" : $staff_id;
 
-       if ($order_val != '') {
-           $e -> orderlist = Yii::$app->db->createCommand(" select * from order_detail where order_no LIKE :order_val ")->bindValue(':order_val', '%'.$order_val)->queryAll();
+       $order['gets'] = $get;
+       $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail')->queryAll();
+       echo("<script>console.log('".json_encode($order_no)."');</script>");
+
+       if(!empty($order_no)) {
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where order_no like :order_no')->bindValue(':order_no', $order_no)->queryAll();
        }
-       else {
-           $e -> orderlist = Yii::$app->db->createCommand('select * from order_detail')->queryAll();
+       if(!empty($user_name)) {
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_name like :user_name')->bindValue(':user_name', $user_name)->queryAll();
+       }
+       if(!empty($user_id)) {
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_id like :user_id')->bindValue(':user_id', $user_id)->queryAll();
+       }
+       if(!empty($user_phone)) {
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_phone like :user_phone')->bindValue(':user_phone', $user_phone)->queryAll();
+       }
+       if(!empty($staff_name)) {
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where staff_name like :staff_name')->bindValue(':staff_name', $staff_name)->queryAll();
+       }
+       if(!empty($staff_id)) {
+           $order['orderlist']= Yii::$app->db->createCommand('select * from order_detail where staff_id like :staff_id')->bindValue(':staff_id', $staff_id)->queryAll();
        }
 
-       return json_encode($e);
+       return $order;
+
    }
+
+
 
    /**
     * @模板消息

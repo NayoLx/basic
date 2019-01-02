@@ -9,6 +9,7 @@
 use yii\helpers\Html;
 use app\widgets\linkpage;
 use app\assets\AppAsset;
+use yii\helpers\Url;
 
 $this->title = '订单列表';
 $this->params['breadcrumbs'][] = $this->title;
@@ -21,25 +22,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tbody>
                     <tr >
                         <td width="10%" class="text-right">订单编号：</td>
-                        <td width="10%"  class="text-left"><input type="text" class="form-control" name="order_no" id="order_no" ></td>
+                        <td width="10%"  class="text-left"><input type="text" class="form-control" name="order_no" id="order_no" value="<?php if(!empty($gets['order_no'])){ echo $gets['order_no']; } ?>" ></td>
                         <td width="10%"  class="text-right">用户姓名：</td>
-                        <td width="20%" class="text-left"><input type="text" class="form-control" name="order_begin" id="user_name"></td>
+                        <td width="20%" class="text-left"><input type="text" class="form-control" name="user_name" id="user_name" value="<?php if(!empty($gets['user_name'])){ echo $gets['user_name']; } ?>" ></td>
                         <td width="10%"  class="text-right">用户学号：</td>
-                        <td width="20%" class="text-left"><input type="text" class="form-control" name="order_end" id="user_id" ></td>
+                        <td width="20%" class="text-left"><input type="text" class="form-control" name="user_id" id="user_id" value="<?php if(!empty($gets['user_id'])){ echo $gets['user_id']; } ?>" ></td>
                     </tr>
                     <tr >
                         <td class="text-right">用户电话：</td>
-                        <td class="text-left"><input type="text" class="form-control" name="customer_phone" id="user_phone" ></td>
+                        <td class="text-left"><input type="text" class="form-control" name="user_phone" id="user_phone" value="<?php if(!empty($gets['user_phone'])){ echo $gets['user_phone']; } ?>" ></td>
                         <td class="text-right">接单人姓名：</td>
-                        <td class="text-left"><input type="text" class="form-control" name="customer_name" id="staff_name"></td>
+                        <td class="text-left"><input type="text" class="form-control" name="staff_name" id="staff_name" value="<?php if(!empty($gets['staff_name'])){ echo $gets['staff_name']; } ?>" ></td>
                         <td class="text-right">接单人学号：</td>
-                        <td class="text-left"><input type="text" class="form-control" name="customer_name" id="staff_id"></td>
+                        <td class="text-left"><input type="text" class="form-control" name="staff_id" id="staff_id" value="<?php if(!empty($gets['staff_id'])){ echo $gets['staff_id']; } ?>" ></td>
                     </tr>
 
                     <tr class="search">
                         <td colspan="6"  class="text-center">
-                            <a type="submit" class="btn btn-primary btncls" id="search">查 询  </a>
-                            <a class="btn btn-default btncls" href="">重 置 </a>
+                            <button type="submit" class="btn btn-primary btncls" id="search" ><i class="glyphicon glyphicon-search"></i> 查 询  </button>
+                            <a class="btn btn-default btncls" href="javascript:void(0)">重 置 </a>
                         </td>
                     </tr>
                 </tbody>
@@ -48,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<script id="template" type="text/template7">
+
     <div class="panel panel-default">
         <div  class="panel-body">
 
@@ -64,102 +65,68 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th style="width:15%;">操作</th>
                     </tr>
                 </thead>
-                {{#each orderlist}}
-                <tr>
-                    <td class="text-center align-middle hqy-row-select">{{id}}</td>
+                <tbody>
+                <?php if ($orderlist != ''): ?>
+                <?php foreach ($orderlist as $item): ?>
+                <tr >
+                    <td class="text-center align-middle hqy-row-select"><?= $item['id'] ?></td>
                     <td >
-                        订单编号： {{order_no}}<br/>
-                        发起人： {{user_name}}<br/>
-                        学号： {{user_stunum}}<br/>
-                        所需性别： {{sex}}<br/>
-                        所需时间： {{express_detail_starttime}} - {{express_detail_endtime}}<br/>
-                        留言： {{express_detail_text}}<br/>
+                        订单编号： <?= $item['order_no'] ?><br/>
+                        发起人： <?= $item['user_name'] ?><br/>
+                        学号： <?= $item['user_stunum'] ?><br/>
+                        所需性别： <?= $item['sex'] ?><br/>
+                        所需时间：<?= $item['express_detail_starttime'] ?> - <?= $item['express_detail_endtime'] ?><br/>
+                        留言： <?= $item['express_detail_text'] ?><br/>
                     </td>
                     <td >
-                        {{push_time}}
+                        <?= $item['push_time'] ?>
                     </td>
                     <td >
-                        {{status_labal}}
+                        <?= $item['status_labal'] ?>
                     </td>
-                    {{#if staff_name}}
+                      <?php if ($item['staff_stunum'] != null && $item['staff_stunum'] != '' && $item['staff_stunum'] != 0): ?>
                        <td>
-                           {{staff_name}}<br/>
-                           id：{{staff_stunum}}
+                           <?= $item['staff_name'] ?><br/>
+                           id：<?= $item['staff_stunum'] ?>
                        </td>
-                    {{else}}
+                    <?php else: ?>
                        <td>
                           暂无人接单
-                       </td>
-                    {{/if}}
+                        </td>
+                    <?php endif;?>
                     <td >
-                        {{order_type}}
+                        <?= $item['order_type'] ?>
                     </td>
                     <td >
-                        <a class="btn btn-primary" style="margin: 4px;" id="todetail" value = "{{id}}" href="?r=order/orderdetail">查看详情</a>
-                        {{#js_if "this.status == 1" }}
-                           <a class="btn btn-success" style="margin: 4px;" >平台派单</a>
-                        {{/js_if}}
+                        <a class="btn btn-primary" style="margin: 4px;" href="<?php echo Url::toRoute(['order/orderdetail', 'id' => $item['id']])?>">查看详情</a>
+                        <?php if ($item['status'] == 1): ?>
+                          <a class="btn btn-success" style="margin: 4px;" >平台派单</a>
+                        <?php endif;?>
                     </td>
                 </tr>
-                {{/each}}
-            </tbody>
+                <?php endforeach; ?>
+                </tbody>
+            <?php else: ?>
+            <p class="text-center">
+               没有找到数据
+            </p>
+          <?php endif; ?>
         </table>
-        <p class="text-center">
-            没有找到数据
-        </p>
+
     </div>
 
 </div>
-</script>
 
 <script type="text/javascript">
-   $(function () {
-
-       /**访问api层专用*/
-     function templateMethod(data) {
-        var template = $('#template').html();
-        var compiled = Template7.compile(template);
-        var htmlStr = compiled(data);
-        $('#content').html(htmlStr);
-     }
-
-     /**全局显示变量*/
-     var data = [];
-
-     $.get('?r=order/orderall',
-         function (data, status) {
-             data = data;
-             templateMethod(data);
-         },'json'
-     );
-
-     $('#search').click(function () {
-         var order_no = $('#order_no').val();
-
-         $.post('?r=order/orderfuzzysearch', {
-             order_val: order_no
-             },
-             function (data) {
-             if (data) {
-                 data = data;
-                 templateMethod(data);
-             }
-             },'json'
-         )
-     });
-
-     // $('#todetail').click(function () {
-     //     console.log("1111");
-     //     tojump();
-     // });
-     //
-     // function tojump() {
-     //     var id = $('#todetail').value();
-     //     url = '?r=order/orderdetail?id=' + id ;
-     //     window.location.href = url ;
-     // };
-
-   })
+    $(function(){
+        var filterUrl ='<?=Url::toRoute("/order/orderlist")?>';
+        $(function(){
+            $('#search').click(function(e){
+                $('#search-form').attr(filterUrl,'action');
+                $('#search-form').submit();
+                return false;
+            })
+        })
 </script>
 
 <div id="content">

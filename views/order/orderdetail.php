@@ -17,38 +17,99 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="panel panel-default">
-    <div class="panel-body">
-        <form action="" method="get" id="search-form" class="filter-form">
-            <table width="100%" class="table table-bordered">
+    <form action="" method="get" id="search-form" class="filter-form">
+            <table width="100%" class="col-sm-12 table table-bordered">
                 <tbody>
+                <tr>
+                    <td colspan="6" class="bg-info">订单信息</td>
+                </tr>
                 <tr >
                     <td width="10%" class="text-right">订单编号：</td>
-                    <td width="10%"  class="text-left"><input type="text" class="form-control" name="order_no" id="order_no" value="<?php if(!empty($gets['order_no'])){ echo $gets['order_no']; } ?>"></td>
-                    <td width="10%"  class="text-right">下单时间（起）：</td>
-                    <td width="20%" class="text-left"><input type="date" class="form-control" name="order_begin" id="order_begin" value="<?php if(!empty($gets['order_begin'])){ echo $gets['order_begin']; } ?>"></td>
-                    <td width="10%"  class="text-right">下单时间（止）：</td>
-                    <td width="20%" class="text-left"><input type="date" class="form-control" name="order_end" id="order_end" value="<?php if(!empty($gets['order_end'])){ echo $gets['order_end']; } ?>"></td>
+                    <td width="10%"  class="text-left"><?=$data['order_no'] ?></td>
+                    <td width="10%"  class="text-right">下单时间：</td>
+                    <td width="20%" class="text-left"><?=$data['push_time'] ?></td>
+                    <td width="10%"  class="text-right">结束时间：</td>
+                    <td width="20%" class="text-left"></td>
                 </tr>
                 <tr >
                     <td class="text-right">用户姓名：</td>
-                    <td class="text-left"><input type="text" class="form-control" name="customer_name" id="customer_name" value="<?php if(!empty($gets['customer_name'])){ echo $gets['customer_name']; } ?>"></td>
+                    <td class="text-left"><?=$data['user_name']?></td>
                     <td class="text-right">用户电话：</td>
-                    <td class="text-left"><input type="text" class="form-control" name="customer_phone" id="customer_phone" value="<?php if(!empty($gets['customer_phone'])){ echo $gets['customer_phone']; } ?>"></td>
+                    <td class="text-left"></td>
                     <td class="text-right">用户学号：</td>
-                    <td class="text-left"><input type="text" class="form-control" name="owner_name" id="owner_name" value="<?php if(!empty($gets['owner_name'])){ echo $gets['owner_name']; } ?>"></td>
+                    <td class="text-left"><?=$data['user_stunum'] ?></td>
                 </tr>
-
-
+                <tr >
+                    <td class="text-right">接单人姓名：</td>
+                    <td class="text-left"><?=$data['staff_name']?></td>
+                    <td class="text-right">接单人电话：</td>
+                    <td class="text-left"></td>
+                    <td class="text-right">接单人学号：</td>
+                    <td class="text-left"><?=$data['staff_stunum'] ?></td>
+                </tr>
+                <tr>
+                    <td class="text-right">订单类型：</td>
+                    <td class="text-left"><?=$data['order_type'] ?></td>
+                    <td class="text-right">订单状态：</td>
+                    <td class="text-left"><?=$data['status_labal'] ?></td>
+                    <td class="text-right">所需性别：</td>
+                    <td class="text-left"><?=$data['sex'] ?></td>
+                </tr>
+                <tr >
+                    <td class="text-right">留言：</td>
+                    <td class="text-left" colspan="6"><?=$data['express_detail_text'] ?></td>
+                </tr>
+                <tr class="search">
+                    <td colspan="6"  class="text-center">
+                        <a type="submit" class="btn btn-primary btncls" id="changeData">修改 </a>
+                    </td>
+                </tr>
                 </tbody>
             </table>
-        </form>
-    </div>
+    </form>
+</div>
+<div class="panel-body form-inline">
+    <table class="table" style="border-top:none;">
+        <tr>
+            <td class="col-sm-6">
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="bg-info">后台备注</td>
+                    </tr>
+                    <tr>
+                        <td width="100%"><textarea class="form-control" style="width:100%;" rows="3" id="remark" name="remark"></textarea></td>
+                    </tr>
+                    <tr class="text-center">
+                        <td>
+                            <button type="button" class="btn btn-primary ladda-button" data-style="slide-up" id="save">提交备注</button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td class="col-sm-6">
+                <table class="table table-bordered">
+                    <tr>
+                        <td colspan="3" class="bg-info">操作日志</td>
+                    </tr>
+                    <tr>
+                        <th width="112" >操作时间</th>
+                        <th width="130" >操作人员</th>
+                        <th >操作内容</th>
+                    </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
 </div>
 
-</div>
+
 
 <script type="text/javascript">
-    $(function () {
 
-    })
 </script>
