@@ -58,9 +58,9 @@ class OrderController extends Controller
 
        $time = date('y-m-d H:i:s',time());
 
-       $check = Yii::$app->db->createCommand( 'select * from order_detail where user_stunum = :stunumber and status != :status')
+       $check = Yii::$app->db->createCommand( 'select * from order_detail where user_stunum = :stunumber and status <> :status')
            ->bindValue(':stunumber', $stunumber['stunumber'])
-           ->bindValue(':status', '4')
+           ->bindValue(':status', 5)
            ->queryAll();
 
        /*处于未完成状态的订单不能超过两个*/
@@ -143,10 +143,12 @@ class OrderController extends Controller
    {
        $openid = Yii::$app->request->post('openid', '');
        $order_no = Yii::$app->request->post('order_no', '');
+       $time = date('y-m-d H:i:s',time());
 
        Yii::$app->db->createCommand()->update('order_detail', [
            'status' => '5',
            'status_labal' => '已删除',
+           'status_delete_time' => $time,
            'is_delete' => 'true',
        ], 'order_no = :order_no')->bindValue(':order_no', $order_no)->execute();
 
@@ -257,26 +259,25 @@ class OrderController extends Controller
        $get['staff_id'] = empty($staff_id) ? "" : $staff_id;
 
        $order['gets'] = $get;
-       $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail')->queryAll();
-       echo("<script>console.log('".json_encode($order_no)."');</script>");
+       $order['orderlist'] = Yii::$app->db->createCommand("select * from order_detail ")->queryAll();
 
        if(!empty($order_no)) {
-           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where order_no like :order_no')->bindValue(':order_no', $order_no)->queryAll();
+           $order['orderlist'] = Yii::$app->db->createCommand("select * from order_detail where order_no LIKE :order_no")->bindValue(':order_no', '%'.$order_no.'%')->queryAll();
        }
        if(!empty($user_name)) {
-           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_name like :user_name')->bindValue(':user_name', $user_name)->queryAll();
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_name like :user_name')->bindValue(':user_name', '%'.$user_name.'%')->queryAll();
        }
        if(!empty($user_id)) {
-           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_id like :user_id')->bindValue(':user_id', $user_id)->queryAll();
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_id like :user_id')->bindValue(':user_id', '%'.$user_id.'%')->queryAll();
        }
        if(!empty($user_phone)) {
-           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_phone like :user_phone')->bindValue(':user_phone', $user_phone)->queryAll();
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_phone like :user_phone')->bindValue(':user_phone', '%'.$user_phone.'%')->queryAll();
        }
        if(!empty($staff_name)) {
-           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where staff_name like :staff_name')->bindValue(':staff_name', $staff_name)->queryAll();
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where staff_name like :staff_name')->bindValue(':staff_name', '%'.$staff_name.'%')->queryAll();
        }
        if(!empty($staff_id)) {
-           $order['orderlist']= Yii::$app->db->createCommand('select * from order_detail where staff_id like :staff_id')->bindValue(':staff_id', $staff_id)->queryAll();
+           $order['orderlist']= Yii::$app->db->createCommand('select * from order_detail where staff_id like :staff_id')->bindValue(':staff_id', '%'.$staff_id.'%')->queryAll();
        }
 
        return $order;

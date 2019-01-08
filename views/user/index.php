@@ -9,6 +9,7 @@
 use yii\helpers\Html;
 use app\widgets\linkpage;
 use app\assets\AppAsset;
+use yii\helpers\Url;
 
 $this->title = '用户列表';
 $this->params['breadcrumbs'][] = $this->title;
@@ -21,15 +22,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tbody>
                 <tr >
                     <td width="10%"  class="text-right">用户姓名：</td>
-                    <td width="20%" class="text-left"><input type="text" class="form-control" name="order_begin" id="user_name"></td>
+                    <td width="20%" class="text-left"><input type="text" class="form-control" name="user_name" id="user_name"></td>
                     <td width="10%"  class="text-right">用户学号：</td>
-                    <td width="20%" class="text-left"><input type="text" class="form-control" name="order_end" id="user_id" ></td>
+                    <td width="20%" class="text-left"><input type="text" class="form-control" name="user_id" id="user_id" ></td>
                     <td class="text-right">用户电话：</td>
-                    <td class="text-left"><input type="text" class="form-control" name="customer_phone" id="user_phone" ></td>
+                    <td class="text-left"><input type="text" class="form-control" name="phone" id="phone" ></td>
                 </tr>
                 <tr class="search">
                     <td colspan="6"  class="text-center">
-                        <a type="submit" class="btn btn-primary btncls" id="search">查 询  </a>
+                        <button type="submit" class="btn btn-primary btncls" id="search">查 询  </button>
                         <a class="btn btn-default btncls" href="">重 置 </a>
                     </td>
                 </tr>
@@ -39,7 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<script id="template" type="text/template7">
     <div class="panel panel-default">
         <div  class="panel-body">
 
@@ -50,85 +50,57 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th style="width:10%">头像</th>
                     <th style="width:10%;">学号</th>
                     <th style="width:10%;">姓名</th>
-                    <th style="width:15%;">专业</th>
-                    <th style="width:15%;">学校邮箱</th>
-                    <th style="width:30%;">操作</th>
+                    <th style="width:25%;">专业</th>
+                    <th style="width:20%;">学校邮箱</th>
+                    <th style="width:15%;">操作</th>
                 </tr>
                 </thead>
-                {{#each userlist}}
+                <?php if ($user_list != ''): ?>
+                <?php foreach ($user_list as $key => $item): ?>
                 <tr>
-                    <td class="text-center align-middle hqy-row-select">{{@index}}</td>
+                    <td class="text-center align-middle hqy-row-select"><?=$key+1?></td>
                     <td >
-
+<!--                        --><?//=$item['stunumber']?>
                     </td>
                     <td >
-                        {{stunumber}}
+                        <?=$item['stunumber']?>
                     </td>
                     <td >
-                        {{stuname}}
+                        <?=$item['stuname']?>
                     </td>
                     <td>
-                        {{major}}
+                        <?=$item['major']?>
                     </td>
                     <td >
-                        {{schoolemail}}
+                        <?=$item['schoolemail']?>
                     </td>
                     <td >
-                        <a class="btn btn-primary" style="margin: 4px;" id = "todetail" value = "{{id}}" href = "">查看详情</a>
+                        <a class="btn btn-primary" style="margin: 4px;" id = "todetail"  href = "<?php echo Url::toRoute(['user/info', 'id' => $item['stunumber']])?>">查看详情</a>
 
                     </td>
                 </tr>
-                {{/each}}
-                </tbody>
+                <?php endforeach; ?>
+                <?php else: ?>
             </table>
             <p class="text-center">
                 没有找到数据
             </p>
+
+            <?php endif; ?>
         </div>
 
     </div>
-</script>
 
 <script type="text/javascript">
     $(function () {
+        var filterUrl ='<?=Url::toRoute("user/index")?>';
+        $('#search').click(function(){
 
-        /**访问api层专用*/
-        function templateMethod(data) {
-            var template = $('#template').html();
-            var compiled = Template7.compile(template);
-            var htmlStr = compiled(data);
-            $('#content').html(htmlStr);
-        }
-
-        /**全局显示变量*/
-        var data = [];
-
-        $.get('?r=user/userlist',
-            function (data, status) {
-                data = data;
-                templateMethod(data);
-            },'json'
-        );
-
-        $('#search').click(function () {
-            var order_no = $('#order_no').val();
-
-            $.post('?r=order/orderfuzzysearch', {
-                    order_val: order_no
-                },
-                function (data) {
-                    if (data) {
-                        data = data;
-                        templateMethod(data);
-                    }
-                },'json'
-            )
-        });
+            $('#search-form').attr('action',filterUrl);
+            $('#search-form').submit();
+            return false;
+        })
     })
 
 
 </script>
-
-<div id="content">
-
-</div>

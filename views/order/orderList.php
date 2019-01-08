@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="panel panel-default">
     <div class="panel-body">
-        <form action="" method="get" id="search-form" class="filter-form">
+        <form action="<?=Url::toRoute("/order/orderlist")?>" method="get" id="search-form" class="filter-form">
             <table width="100%" class="table table-bordered">
                 <tbody>
                     <tr >
@@ -39,7 +39,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <tr class="search">
                         <td colspan="6"  class="text-center">
-                            <button type="submit" class="btn btn-primary btncls" id="search" ><i class="glyphicon glyphicon-search"></i> 查 询  </button>
+                            <button type="submit" class="btn btn-primary btncls" id="search"><i class="glyphicon glyphicon-search"></i> 查 询  </button>
+<!--                             <a class="btn btn-primary btncls" href="--><?//=Url::toRoute("/order/orderlist)") ?><!--"><i class="glyphicon glyphicon-search"></i> 查 询  </a>-->
+                            <!-- <a type="submit" class="btn btn-primary btncls" href="<?//=Url::toRoute(["order/orderlist", 'order_no' => $gets['order_no'], 'user_name' =>$gets['user_name'], 'user_id'=>$gets['user_id'], 'user_phone'=>$gets['user_phone'], 'staff_name'=>$gets['staff_name'],'staff_id'=>$gets['staff_id']])?>"><i class="glyphicon glyphicon-search"></i> 查 询  </a> -->
                             <a class="btn btn-default btncls" href="javascript:void(0)">重 置 </a>
                         </td>
                     </tr>
@@ -65,9 +67,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         <th style="width:15%;">操作</th>
                     </tr>
                 </thead>
+                <?php if($orderlist != ''): ?>
                 <tbody>
-                <?php if ($orderlist != ''): ?>
-                <?php foreach ($orderlist as $item): ?>
+                <?php foreach($orderlist as $item): ?>
                 <tr >
                     <td class="text-center align-middle hqy-row-select"><?= $item['id'] ?></td>
                     <td >
@@ -119,16 +121,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script type="text/javascript">
     $(function(){
-        var filterUrl ='<?=Url::toRoute("/order/orderlist")?>';
-        $(function(){
-            $('#search').click(function(e){
-                $('#search-form').attr(filterUrl,'action');
+
+            $('#search').click(function(){
+                var filterUrl ='<?=Url::toRoute("/order/orderlist")?>';
+                $('#search-form').attr('action',filterUrl);
                 $('#search-form').submit();
                 return false;
             })
         })
 </script>
-
-<div id="content">
-
-</div>
