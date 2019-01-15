@@ -433,6 +433,8 @@ class MyController extends Controller
      */
     public function actionSavebinddetail()
     {
+        $e = new \stdClass();
+        $e -> success = false;
         $openid = Yii::$app->request->post('openid', '');
         $usernumber = Yii::$app->request->post('usernumber', '');
         $password = Yii::$app->request->post('password', '');
@@ -440,25 +442,14 @@ class MyController extends Controller
         $isbind = Yii::$app->request->post('is_bind', '');
 
         Yii::$app->db->createCommand()->update('wxdeatil', [
-            'openid' => $openid,
             'stunumber' => $usernumber,
             'password' => $password,
             'phone' => $phone,
             'is_bind' => $isbind,
         ], 'openid = :openid')->bindValue(':openid', $openid)->execute();
-    }
 
-    /**
-     * 检查微信账号是否绑定学号
-     * */
-    public function actionCheckstuname()
-    {
-        $openid = Yii::$app->request->post('openid', '');
-        $check = Yii::$app->db->createCommand('select stunumber and password from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
-
-        if ($check) {
-            echo json_encode($arrayName = array('state' => $check != '' ? true : false));
-        }
+        $e -> success = true; 
+        return json_encode($e);
     }
 
     /**
@@ -494,12 +485,13 @@ class MyController extends Controller
 
         $check = Yii::$app->db->createCommand('select is_idcard_check from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
 
-        if ($check == true) {
-            echo json_encode($arrayName = array('state' => true));
+        if ($check) {
+            echo json_encode($arrayName = array('state' => $check['is_idcard_check'] != '' ? true : false));
         }
     }
 
     /**
+     * 企业小程序才有appid,所以暂时无法自主获取用户的手机号码
      * 获取手机号
      */
     public function actionGetphone()
@@ -589,5 +581,20 @@ class MyController extends Controller
             }
             echo json_encode($arrayName = array('state' => $check != '' ? true : false));//获取课表的数据
         }
+    }
+
+    //获取微信信息判断
+    public function actionHomecheck(){
+        $e = new \stdClass();
+        $openid = Yii::$app->request->post('openid', '');
+
+        $check = Yii::$app->db->createCommand('select is_idcard_check, is_bind from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+
+        $e -> is_idcard_check = $check['is_idcard_check'];
+        $e -> is_bind = $check['is_bind'];
+        $e -> success = true;
+
+        return json_encode($e);
+
     }
 }
