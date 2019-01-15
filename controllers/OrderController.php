@@ -12,6 +12,7 @@ use yii\db\Exception;
 use yii\web\Controller;
 use app\helpers\Order;
 use app\helpers\Utils;
+use app\helpers\LogHelpers;
 
 class OrderController extends Controller
 {
@@ -43,6 +44,7 @@ class OrderController extends Controller
      */
    public function actionSaveorderdetail()
    {
+       $order = new \stdClass();
        $openid = Yii::$app->request->post('openid','');
        $order_type = Yii::$app->request->post('order_type','');
        $sex = Yii::$app->request->post('sex', '');
@@ -84,6 +86,12 @@ class OrderController extends Controller
                'is_bind_done' => 'false',
                'is_finish' => 'false',
            ])->execute();
+
+           //log日志
+           $order -> order_id = $order_no;
+           $order -> user_name =  $stu_name['stuname'];
+           LogHelpers::orderLog(LogHelpers::ACTION_CREATE, $order);
+
            return 'true';
        }
        else {
@@ -141,7 +149,11 @@ class OrderController extends Controller
     */
    public function actionDeleteorder()
    {
+       $order = new \stdClass();
        $openid = Yii::$app->request->post('openid', '');
+       $stunumber = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+       $operator_id = Yii::$app->db->createCommand('select stuname from student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
+
        $order_no = Yii::$app->request->post('order_no', '');
        $time = date('y-m-d H:i:s',time());
 
@@ -154,10 +166,13 @@ class OrderController extends Controller
 
        $check = Yii::$app->db->createCommand('select is_delete from order_detail where order_no = :order_no')->bindValue(':order_no', $order_no)->queryOne();
 
-       echo $order_no;
-
        if ($check['is_delete'] == 'true') {
-           return 'true';
+          //log日志
+          $order -> user_name = $operator_id['stuname'];
+          $order -> order_id = $order_no;
+
+          LogHelpers::orderlog(LogHelpers::ACTION_DELETE, $order);
+          return 'true';
        }
 
        return 'false';
@@ -194,6 +209,10 @@ class OrderController extends Controller
                'is_bind_take' =>'true',
            ], 'order_no = :order_no')->bindValue(':order_no', $order_no)->execute();
 
+           $e -> order_id = $order_no;
+           $e -> user_name = $stuname['stuname'];
+           LogHelpers::orderlog(LogHelpers::ACTION_PICK, $e);
+
            return json_encode($e);
        }
        elseif ($status == 3) {
@@ -205,6 +224,10 @@ class OrderController extends Controller
                'is_bind_done' =>'true',
            ], 'order_no = :order_no')->bindValue(':order_no', $order_no)->execute();
 
+           $e -> order_id = $order_no;
+           $e -> user_name = $stuname['stuname'];
+           LogHelpers::orderlog(LogHelpers::ACTION_DOING, $e);
+
            return json_encode($e);
        }
        elseif ($status == 4) {
@@ -215,6 +238,10 @@ class OrderController extends Controller
                'status_finish_time' => $time,
                'is_finish' =>'true',
            ], 'order_no = :order_no')->bindValue(':order_no', $order_no)->execute();
+           
+           $e -> order_id = $order_no;
+           $e -> user_name = $stuname['stuname'];
+           LogHelpers::orderlog(LogHelpers::ACTION_FINISE, $e);
 
            return json_encode($e);
        }
