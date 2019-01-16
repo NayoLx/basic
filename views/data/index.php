@@ -6,9 +6,12 @@
  * Time: 10:14
  */
 use yii\helpers\Url;
+use yii\helpers\Html;
 
 $this->title = '实时指标';
+
 ?>
+
 
 <style>
     .btncls{margin:0 10px!important;}
@@ -169,7 +172,7 @@ $this->title = '实时指标';
                         </div>
                         <div class="panel-body wares">
                             <div class="data_box">
-                                <div class="data_box" id="data_box" style="height: 400px;width:750px;">
+                                <div class="data_box" id="data_box" style="height: 400px;width:450px;">
 
                                 </div>
                             </div>
@@ -186,7 +189,7 @@ $this->title = '实时指标';
                         </div>
                         <div class="panel-body wares">
                             <div class="data_box">
-                                <div class="data_box" id="channels" style="height: 400px;width:750px;">
+                                <div class="data_box" id="channels" style="height: 400px;width:450px;">
 
                                 </div>
                             </div>
@@ -200,28 +203,30 @@ $this->title = '实时指标';
         </div>
     </div>
 
-<script src="../../web/js/echarts.min.js" type="text/javascript"></script>
-<script>
+<script src="/basic/web/js/echarts.min.js" type="text/javascript"></script>
+<script src="/basic/web/js/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" >
     $(document).ready(function() {
         function getdevicedata(){
             //饼状图的配置
             var myChart = echarts.init(document.getElementById('data_box'));
             var option2 = {
+
                 title : {
-                    text: '用户设备类型比例',
-                    subtext: '设备数量占比',
+                    text: '用户订单比例',
                     x:'center'
                 },
                 tooltip : {
                     trigger: 'item',
                     formatter: "{a} <br/>{b} : {c} ({d}%)"
                 },
-                legend: {
-                    orient: 'vertical',
-                    left: 'left',
-                    data: [
-
-                    ]
+                visualMap: {
+                    show: false,
+                    min: 80,
+                    max: 600,
+                    inRange: {
+                        colorLightness: [0, 1]
+                    }
                 },
                 series : [
                     {
@@ -230,14 +235,38 @@ $this->title = '实时指标';
                         radius : '55%',
                         center: ['50%', '60%'],
                         data:[
-
-                        ],
+                            {name: 'A', value: 1212},
+                            {name: 'B', value: 2323},
+                            {name: 'C', value: 1919}
+                        ].sort(function (a, b) { return a.value - b.value; }),
+                        roseType: 'radius',
+                        label: {
+                            normal: {
+                                textStyle: {
+                                    color: 'black'
+                                }
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                lineStyle: {
+                                    color: 'black'
+                                },
+                                smooth: 0.2,
+                                length: 10,
+                                length2: 20
+                            }
+                        },
                         itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
+                            normal: {
+                                shadowBlur: 200,
                                 shadowColor: 'rgba(0, 0, 0, 0.5)'
                             }
+                        },
+                        animationType: 'scale',
+                        animationEasing: 'elasticOut',
+                        animationDelay: function (idx) {
+                            return Math.random() * 200;
                         }
                     }
                 ]
@@ -250,20 +279,20 @@ $this->title = '实时指标';
             var myChart = echarts.init(document.getElementById('channels'));
             var option2 = {
                 title : {
-                    text: '报修渠道比例',
-                    subtext: '订单量占比',
+                    text: '需求类型比例',
                     x:'center'
                 },
                 tooltip : {
                     trigger: 'item',
                     formatter: "{a} <br/>{b} : {c} ({d}%)"
                 },
-                legend: {
-                    orient: 'vertical',
-                    left: 'left',
-                    data: [
-
-                    ]
+                visualMap: {
+                    show: false,
+                    min: 80,
+                    max: 600,
+                    inRange: {
+                        colorLightness: [0, 1]
+                    }
                 },
                 series : [
                     {
@@ -272,14 +301,38 @@ $this->title = '实时指标';
                         radius : '55%',
                         center: ['50%', '60%'],
                         data:[
-
-                        ],
+                            {name: 'A', value: 1212},
+                            {name: 'B', value: 2323},
+                            {name: 'C', value: 1919}
+                        ].sort(function (a, b) { return a.value - b.value; }),
+                        roseType: 'radius',
+                        label: {
+                            normal: {
+                                textStyle: {
+                                    color: 'black'
+                                }
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                lineStyle: {
+                                    color: 'black'
+                                },
+                                smooth: 0.2,
+                                length: 10,
+                                length2: 20
+                            }
+                        },
                         itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
+                            normal: {
+                                shadowBlur: 200,
                                 shadowColor: 'rgba(0, 0, 0, 0.5)'
                             }
+                        },
+                        animationType: 'scale',
+                        animationEasing: 'elasticOut',
+                        animationDelay: function (idx) {
+                            return Math.random() * 200;
                         }
                     }
                 ]

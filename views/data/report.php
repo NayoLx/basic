@@ -119,7 +119,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<script src="../../web/js/echarts.min.js" type="text/javascript"></script>
+<script src="/basic/web/js/echarts.min.js" type="text/javascript"></script>
+<script src="/basic/web/js/jquery.min.js" type="text/javascript"></script>
 <script>
     $(document).ready(function () {
         function getdata() {
@@ -127,7 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
             var myChart = echarts.init(document.getElementById('data_box'));
             var option2 = {
                 title: {
-                    text: '贴码及订单趋势图',
+                    text: '订单趋势图',
                     top: '0%',
                     left: '50%',
                     margin_left: '-40px',
