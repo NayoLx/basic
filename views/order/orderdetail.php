@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="text-right">接单人姓名：</td>
                     <td class="text-left"><?=$data['staff_name']?></td>
                     <td class="text-right">接单人电话：</td>
-                    <td class="text-left"></td>
+                    <td class="text-left"><?=$staff_phone['phone']?></td>
                     <td class="text-right">接单人学号：</td>
                     <td class="text-left"><?=$data['staff_stunum'] ?></td>
                 </tr>
@@ -92,16 +92,24 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td colspan="3" class="bg-info">操作日志</td>
                     </tr>
                     <tr>
-                        <th width="112" >操作时间</th>
+                        <th width="150" >操作时间</th>
                         <th width="130" >操作人员</th>
                         <th >操作内容</th>
                     </tr>
+                    <?php if($order_log):?>
+                        <?php foreach($order_log as $key => $item):?>
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td><?=$item['log_time']?></td>
+                            <td><?php if($item['log_type'] == 0){echo '客户';}
+                            elseif($item['log_type'] == 1) {echo "接单人";}elseif($item['log_type'] == 2) {echo "后台人员";} else { echo "系统";}?> <?=$item['log_master']?></td>
+                            <td><?=$item['log_message']?></td>
                         </tr>
-
+                    <?php endforeach;?>
+                    <?php else:?>
+                        <tr>
+                            <td colspan="3" style="text-align: center;">暂无日志信息</td>
+                        </tr>
+                    <?php endif;?>
                 </table>
             </td>
         </tr>

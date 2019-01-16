@@ -26,6 +26,9 @@ class LogHelpers
     const OPERATOR_TYPE_ADMIN = 2;
     const OPERATOR_TYPE_SYSTEM = 3;
 
+    /**
+     * 订单操作日志
+     */
     static function orderLog($action, $order)
     {
     	if ($order == '') {
@@ -91,5 +94,13 @@ class LogHelpers
            ])->execute();
     	
     	return true;
+    }
+
+    /**
+     * 登录日志
+     */
+    static function loginLog()
+    {
+
     }
 }

@@ -33,7 +33,12 @@ class OrderController extends Controller
         $params = array();
 
         $order_data = Yii::$app->db->createCommand('select * from order_detail where id = :id')->bindValue(':id', $id)->queryOne();
+        $order_log = Yii::$app->db->createCommand('select * from order_log where order_no = :order_no')->bindValue(':order_no', $order_data['order_no'])->queryAll();
+        $staff_phone = Yii::$app->db->createCommand('select phone from wxdeatil where stunumber = :stunumber')->bindValue(':stunumber', $order_data['staff_stunum'])->queryOne();
+
         $params['data'] = $order_data;
+        $params['order_log'] = $order_log;
+        $params['staff_phone'] = $staff_phone;
 
 
         return $this->render('orderdetail', $params);
