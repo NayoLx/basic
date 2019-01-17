@@ -44,22 +44,33 @@ $this->title = '实时指标';
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">总访问数：</label>
                                 <div class="col-sm-6 text-left">
+                                    <?php if($client_data['all']) {
+                                        echo $client_data['all'];
+                                    } else { echo "0";} ?>
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">昨日新增用户数：</label>
                                 <div class="col-sm-6 text-left">
+                                    <?php if($client_data['last_week_new']) {
+                                        echo $client_data['last_week_new'];
+                                    } else { echo "0";} ?>
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">手机认证用户数：</label>
                                 <div class="col-sm-6 text-left">
+                                    <?php if($client_data['phone_is_bind']) {
+                                        echo $client_data['phone_is_bind'];
+                                    } else { echo "0";} ?>
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">小程序用户数：</label>
                                 <div class="col-sm-6 text-left">
-
+                                    <?php if($client_data['mina_user']) {
+                                        echo $client_data['mina_user'];
+                                    } else { echo "0";} ?>
                                 </div>
                             </div>
                         </div>
@@ -77,41 +88,49 @@ $this->title = '实时指标';
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">平台总订单：</label>
                                 <div class="col-sm-6 text-left">
-
+                                    <?php if($history_order_data['all_order']) {
+                                        echo $history_order_data['all_order'];
+                                    } else { echo "0";} ?>
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">系统自动关闭订单：</label>
                                 <div class="col-sm-6 text-left">
-                                </div>
-                            </div>
-                            <div class="form-group col-sm-12">
-                                <label for="skillName" class="col-sm-6 control-label text-right">已支付订单：</label>
-                                <div class="col-sm-6 text-left">
+                                    <?php if($history_order_data['system_close'] ) {
+                                        echo $history_order_data['system_close'] ;
+                                    } else { echo "0";} ?>
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">待完成订单：</label>
                                 <div class="col-sm-6 text-left">
-
+                                    <?php if($history_order_data['nofinish_order']) {
+                                        echo $history_order_data['nofinish_order'];
+                                    } else { echo "0";} ?>
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">已取消订单：</label>
                                 <div class="col-sm-6 text-left">
-
+                                    <?php if($history_order_data['close_order']) {
+                                        echo $history_order_data['close_order'];
+                                    } else { echo "0";} ?>
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">异常订单：</label>
                                 <div class="col-sm-6 text-left">
-
+                                    <?php if($history_order_data['issue_order'] ) {
+                                        echo $history_order_data['issue_order'] ;
+                                    } else { echo "0";} ?>
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">重复下单客户：</label>
                                 <div class="col-sm-6 text-left">
-
+                                    <?php if($history_order_data['issue_order'] ) {
+                                        echo $hhistory_order_data['issue_order'] ;
+                                    } else { echo "0";} ?>
                                 </div>
                             </div>
                         </div>
@@ -130,31 +149,31 @@ $this->title = '实时指标';
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">平台总订单：</label>
                                 <div class="col-sm-6 text-left">
-
+                                    0
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">系统自动关闭订单：</label>
                                 <div class="col-sm-6 text-left">
-
+                                    0
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">已支付订单：</label>
                                 <div class="col-sm-6 text-left">
-
+                                    0
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">待完成订单：</label>
                                 <div class="col-sm-6 text-left">
-
+                                    0
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">已取消订单：</label>
                                 <div class="col-sm-6 text-left">
-
+                                    0
                                 </div>
                             </div>
                         </div>
@@ -197,9 +216,6 @@ $this->title = '实时指标';
                     </div>
                 </div>
             </div>
-
-
-
         </div>
     </div>
 
@@ -301,9 +317,11 @@ $this->title = '实时指标';
                         radius : '55%',
                         center: ['50%', '60%'],
                         data:[
-                            {name: 'A', value: 1212},
-                            {name: 'B', value: 2323},
-                            {name: 'C', value: 1919}
+                            <?php if($order_type_chart) {
+                                foreach ($order_type_chart as $key => $item) {
+                                    echo "{name: '{$item['name']}', value: {$item['value']}},";
+                                }
+                        }?>
                         ].sort(function (a, b) { return a.value - b.value; }),
                         roseType: 'radius',
                         label: {
