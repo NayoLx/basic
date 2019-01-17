@@ -59,7 +59,7 @@ class OrderController extends Controller
        $end_time = Yii::$app->request->post('end_time', '');
 
        $stunumber = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
-       $stu_name = Yii::$app->db->createCommand('select stuname from student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
+       $stu_name = Yii::$app->db->createCommand('select stuname from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
        $order_no = Order::setOrder_no($order_type);
        $type = Order::setType($order_type);
 
@@ -157,7 +157,7 @@ class OrderController extends Controller
        $order = new \stdClass();
        $openid = Yii::$app->request->post('openid', '');
        $stunumber = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
-       $operator_id = Yii::$app->db->createCommand('select stuname from student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
+       $operator_id = Yii::$app->db->createCommand('select stuname from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
 
        $order_no = Yii::$app->request->post('order_no', '');
        $time = date('y-m-d H:i:s',time());
@@ -198,7 +198,7 @@ class OrderController extends Controller
         * 该用户
         */
        $stunumber = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
-       $stuname = Yii::$app->db->createCommand('select stuname from student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
+       $stuname = Yii::$app->db->createCommand('select stuname from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
        $time = date('y-m-d H:i:s',time());
 
        /**********2--接单中 3--处理中 4--已完成********/
@@ -332,7 +332,7 @@ class OrderController extends Controller
        $form_id = Yii::$app->request->post('form_id', '');
        $keyword1 = Yii::$app->request->post('keyword1', '');  //订单号
        $stu = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $touser)->queryOne();
-       $keyword2 = Yii::$app->db->createCommand('select stuname from student where stunumber = :stunumber')->bindValue(':stunumber', $stu['stunumber'])->queryOne(); //接单人名称
+       $keyword2 = Yii::$app->db->createCommand('select stuname from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stu['stunumber'])->queryOne(); //接单人名称
        $keyword3 = date('y-m-d H:i:s',time()); //接单时间
        $keyword4 = Yii::$app->db->createCommand('select phone from wxdeatil where openid = :openid')->bindValue(':openid', $touser)->queryOne(); //电话
        $keyword5 = ''; //微信号

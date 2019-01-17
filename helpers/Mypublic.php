@@ -78,7 +78,7 @@ class Mypublic
         $grade = Mypublic::trimall($detail[1][21]);
 
         //专业：[1][5] 身份证：[1][6] 邮箱：[1][7] 班主任：[1][8] 辅导员[1][9]
-        Yii::$app->db->createCommand()->update('student',[
+        Yii::$app->db->createCommand()->update('user_student',[
             'major' => $major,
             'year' => $year,
             'idcard' => $idcard,
@@ -149,7 +149,7 @@ class Mypublic
             $data["stuName"] = isset($name_info[2][0]) ? $name_info[2][0] : '';
             $stu['stugrade'] = isset($name_info[3][0]) ? $name_info[3][0] : '';
 
-            Yii::$app->db->createCommand()->update('student',[
+            Yii::$app->db->createCommand()->update('user_student',[
                 'stuname' => $name_info[2][0],
             ],'stuNumber = :username')->bindValue(':username', $name_info[1][0])->execute();
             for($i=3; $i>=0; $i--)
@@ -163,7 +163,7 @@ class Mypublic
 
             $stugrade = serialize($data["stugrade"]);
 
-            Yii::$app->db->createCommand()->update('stugrade',[
+            Yii::$app->db->createCommand()->update('user_stugrade',[
                 'stugrade' => $stugrade,
             ],'stunumber = :username')->bindValue(':username', $name_info[1][0])->execute();
 
@@ -272,7 +272,7 @@ class Mypublic
         $stu['stunumber'] = isset($name_info[1][0]) ? $name_info[1][0] : ''; //学号
 
         //判断数据库里有无重复数据
-        $test = Yii::$app->db->createCommand('select * from scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
+        $test = Yii::$app->db->createCommand('select * from user_scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
             ->bindValue(':username',  $stu['stunumber'])
             ->bindValue(':schoolyear', $schoolyear)
             ->bindValue(':semster', $semester)->queryOne();
@@ -287,7 +287,7 @@ class Mypublic
             $sc_detail = array();
             for ($i = 0; $i < 8; $i++) {
                 $sc_detail[] = array_slice($sc, $i * 7, 7);
-                Yii::$app->db->createCommand()->insert('scgedular', [
+                Yii::$app->db->createCommand()->insert('user_scgedular', [
                     'stunumber' => $stu['stunumber'],
                     'schoolyear' => $schoolyear,
                     'semster' => $semester,
@@ -302,7 +302,7 @@ class Mypublic
                 ])->execute();
             }
         }
-        $testx = Yii::$app->db->createCommand('select * from scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
+        $testx = Yii::$app->db->createCommand('select * from user_scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
             ->bindValue(':username', $stu['stunumber'])
             ->bindValue(':schoolyear', $schoolyear)
             ->bindValue(':semster', $semester)
@@ -332,7 +332,7 @@ class Mypublic
         }
 
         $db_obli = serialize($obligatory);
-        Yii::$app->db->createCommand()->update('student', [
+        Yii::$app->db->createCommand()->update('user_student', [
             'obligatory' => $db_obli
         ], 'stunumber = :stunum')->bindValue('stunum', $username)->execute();
 

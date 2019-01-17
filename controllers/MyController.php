@@ -67,17 +67,17 @@ class MyController extends Controller
         preg_match_all($cookie_name, $content, $cookie_info);
         $cookie_value = $cookie_info[1][0];
 
-        $grad = Yii::$app->db->createCommand('select * from stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();
+        $grad = Yii::$app->db->createCommand('select * from user_stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();
         if ($grad == false) {
-            Yii::$app->db->createCommand()->insert('stugrade', [
+            Yii::$app->db->createCommand()->insert('user_stugrade', [
                 'stunumber' => $username,
             ])->execute();
         }
 
         //判断数据库里没无数据
-        $test = Yii::$app->db->createCommand('select * from student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
+        $test = Yii::$app->db->createCommand('select * from user_student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
         if ($test == true) {
-            $getpass = Yii::$app->db->createCommand('select password from student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
+            $getpass = Yii::$app->db->createCommand('select password from user_student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
             if ($password == $getpass['password']) {
                 return json_encode($arrayName = array('state' => true));//获取课表的数据
             }
@@ -92,7 +92,7 @@ class MyController extends Controller
             $check = Mypublic::setJsoncheck($schedularUrl, $cookie);
 
             if ($check == true) {
-                Yii::$app->db->createCommand()->update('student', [
+                Yii::$app->db->createCommand()->update('user_student', [
                     'stunumber' => $username,
                     'password' => $password,
                     'cookie' => $cookie_value,
@@ -116,7 +116,7 @@ class MyController extends Controller
             $check = Mypublic::setJsoncheck($schedularUrl, $cookie);
 
             if ($check == true) {
-                Yii::$app->db->createCommand()->insert('student', [
+                Yii::$app->db->createCommand()->insert('user_student', [
                     'stunumber' => $username,
                     'password' => $password,
                     'cookie' => $cookie_value,
@@ -156,13 +156,13 @@ class MyController extends Controller
         $cookie = dirname(__FILE__) . '/cookie.txt';//保存cookie在本地
 
         /*如果数据库有数据则直接调用数据库里的数据*/
-        $test = Yii::$app->db->createCommand('select * from scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
+        $test = Yii::$app->db->createCommand('select * from user_scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
             ->bindValue(':username', $username)
             ->bindValue(':schoolyear', $schoolyear)
             ->bindValue(':semster', $semester)
             ->queryAll();
 
-        $testx = Yii::$app->db->createCommand('select monday, tuesday, wednesday, thursday, friday, saturday, sunday from scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
+        $testx = Yii::$app->db->createCommand('select monday, tuesday, wednesday, thursday, friday, saturday, sunday from user_scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
             ->bindValue(':username', $username)
             ->bindValue(':schoolyear', $schoolyear)
             ->bindValue(':semster', $semester)
@@ -177,7 +177,7 @@ class MyController extends Controller
                 $schedularUrl = "http://class.sise.com.cn:7001/sise/module/student_schedular/student_schedular.jsp?schoolyear=" . $schoolyear . "&semester=" . $semester; //课程表url
                 Mypublic::get_sqlschedular(Utils::get_content($schedularUrl, $cookie), $schoolyear, $semester);
 
-                $testx = Yii::$app->db->createCommand('select monday, tuesday, wednesday, thursday, friday, saturday, sunday from scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
+                $testx = Yii::$app->db->createCommand('select monday, tuesday, wednesday, thursday, friday, saturday, sunday from user_scgedular where stunumber = :username and schoolyear = :schoolyear and semster = :semster')
                     ->bindValue(':username', $username)
                     ->bindValue(':schoolyear', $schoolyear)
                     ->bindValue(':semster', $semester)
@@ -236,8 +236,8 @@ class MyController extends Controller
     public function actionGetgrade()
     {
         $username = Yii::$app->request->post('stunumber', '');
-        $grade = Yii::$app->db->createCommand('select stugrade from stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();
-        $getgrade = unserialize($grade['stugrade']);
+        $grade = Yii::$app->db->createCommand('select stugrade from user_stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();
+        $getgrade = unserialize($grade['user_stugrade']);
 
         echo json_encode($getgrade);
     }
@@ -254,7 +254,7 @@ class MyController extends Controller
         $password = $getPersonPass['password'];
 
         /*判断数据库里有无重复数据*/
-        $testx = Yii::$app->db->createCommand('select * from student where stunumber = :username and password = :password')
+        $testx = Yii::$app->db->createCommand('select * from user_student where stunumber = :username and password = :password')
             ->bindValue(':username', $username)
             ->bindValue(':password', $password)
             ->queryAll();
@@ -284,7 +284,7 @@ class MyController extends Controller
                 $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=" . $studentid;
                 $detail = Mypublic::get_page(Utils::get_content($detailUrl, $cookie));
 
-                $testx = Yii::$app->db->createCommand('select * from student where stunumber = :username and password = :password')
+                $testx = Yii::$app->db->createCommand('select * from user_student where stunumber = :username and password = :password')
                     ->bindValue(':username', $username)
                     ->bindValue(':password', $password)
                     ->queryAll();
@@ -307,7 +307,7 @@ class MyController extends Controller
         $password = $getPersonPass['password'];
 
         /*判断数据库里有无重复数据*/
-        $testx = Yii::$app->db->createCommand('select obligatory from student where stunumber = :username and password = :password')
+        $testx = Yii::$app->db->createCommand('select obligatory from user_student where stunumber = :username and password = :password')
             ->bindValue(':username', $username)
             ->bindValue(':password', $password)
             ->queryAll();
@@ -341,7 +341,7 @@ class MyController extends Controller
                 $detailUrl = "http://class.sise.com.cn:7001/SISEWeb/pub/course/courseViewAction.do?method=doMain&studentid=" . $studentid;
                 Mypublic::get_obligatory(Utils::get_content($detailUrl, $cookie), $username);
 
-                $testx = Yii::$app->db->createCommand('select obligatory from student where stunumber = :username and password = :password')
+                $testx = Yii::$app->db->createCommand('select obligatory from user_student where stunumber = :username and password = :password')
                     ->bindValue(':username', $username)
                     ->bindValue(':password', $password)
                     ->queryAll();
@@ -463,8 +463,8 @@ class MyController extends Controller
         $name = Yii::$app->request->post('name', '');
 
         $usernumber = $getPersonUser['stunumber'];
-        $db_idcard = Yii::$app->db->createCommand('select idcard from student where stunumber = :usernumber')->bindValue(':usernumber', $usernumber)->queryOne();
-        $db_name = Yii::$app->db->createCommand('select stuname from student where stunumber = :usernumber')->bindValue(':usernumber', $usernumber)->queryOne();
+        $db_idcard = Yii::$app->db->createCommand('select idcard from user_student where stunumber = :usernumber')->bindValue(':usernumber', $usernumber)->queryOne();
+        $db_name = Yii::$app->db->createCommand('select stuname from user_student where stunumber = :usernumber')->bindValue(':usernumber', $usernumber)->queryOne();
 
         if ($idcard == $db_idcard['idcard'] && $name == $db_name['stuname']) {
             Yii::$app->db->createCommand()->update('wxdeatil', [
@@ -519,17 +519,17 @@ class MyController extends Controller
         preg_match_all($cookie_name, $content, $cookie_info);
         $cookie_value = $cookie_info[1][0];
 
-        $grad = Yii::$app->db->createCommand('select * from stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();
+        $grad = Yii::$app->db->createCommand('select * from user_stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();
         if ($grad == false) {
-            Yii::$app->db->createCommand()->insert('stugrade', [
+            Yii::$app->db->createCommand()->insert('user_stugrade', [
                 'stunumber' => $username,
             ])->execute();
         }
 
         //判断数据库里没无数据
-        $test = Yii::$app->db->createCommand('select * from student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
+        $test = Yii::$app->db->createCommand('select * from user_student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
         if ($test == true) {
-            $getpass = Yii::$app->db->createCommand('select password from student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
+            $getpass = Yii::$app->db->createCommand('select password from user_student where stuNumber = :username')->bindValue(':username', $username)->queryOne();
             if ($password == $getpass['password']) {
                 return json_encode($arrayName = array('state' => true));//获取课表的数据
             }
@@ -544,7 +544,7 @@ class MyController extends Controller
             $check = Mypublic::setJsoncheck($schedularUrl, $cookie);
 
             if ($check == true) {
-                Yii::$app->db->createCommand()->update('student', [
+                Yii::$app->db->createCommand()->update('user_student', [
                     'stunumber' => $username,
                     'password' => $password,
                     'cookie' => $cookie_value,
@@ -568,7 +568,7 @@ class MyController extends Controller
             $check = Mypublic::setJsoncheck($schedularUrl, $cookie);
 
             if ($check == true) {
-                Yii::$app->db->createCommand()->insert('student', [
+                Yii::$app->db->createCommand()->insert('user_student', [
                     'stunumber' => $username,
                     'password' => $password,
                     'cookie' => $cookie_value,

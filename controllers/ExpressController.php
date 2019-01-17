@@ -61,7 +61,7 @@ class ExpressController extends Controller
      */
     public function  actionGetkuaidi()
     {
-        $allkuaidi = Yii::$app->db->createCommand('select * from kuaidibird')->queryAll();
+        $allkuaidi = Yii::$app->db->createCommand('select * from kuaidi_bird')->queryAll();
 
         $kuaiditype = array();
 

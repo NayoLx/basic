@@ -45,16 +45,16 @@ class UserController extends Controller
 
 
         $order['gets'] = $get;
-        $order['user_list'] = Yii::$app->db->createCommand('select * from student')->queryAll();
+        $order['user_list'] = Yii::$app->db->createCommand('select * from user_student')->queryAll();
 
         if(!empty($order_no)) {
-            $order['user_list'] = Yii::$app->db->createCommand("select * from student where stunumber LIKE :user_no")->bindValue(':order_no', '%'.$order_no)->queryAll();
+            $order['user_list'] = Yii::$app->db->createCommand("select * from user_student where stunumber LIKE :user_no")->bindValue(':order_no', '%'.$order_no)->queryAll();
         }
         if(!empty($user_name)) {
-            $order['user_list'] = Yii::$app->db->createCommand('select * from student where stuname like :user_name')->bindValue(':user_name', '%'.$user_name.'%')->queryAll();
+            $order['user_list'] = Yii::$app->db->createCommand('select * from user_student where stuname like :user_name')->bindValue(':user_name', '%'.$user_name.'%')->queryAll();
         }
         if(!empty($user_id)) {
-            $order['user_list'] = Yii::$app->db->createCommand('select * from student where phone like :user_phone')->bindValue(':user_phone', '%'.$user_phone)->queryAll();
+            $order['user_list'] = Yii::$app->db->createCommand('select * from user_student where phone like :user_phone')->bindValue(':user_phone', '%'.$user_phone)->queryAll();
         }
 
 
@@ -75,7 +75,7 @@ class UserController extends Controller
         $scgedular = [];
 
         /**用户信息**/
-        $user_info = Yii::$app->db->createCommand('select * from student where stunumber = :stunumber')->bindValue(':stunumber', $stuid)->queryOne();
+        $user_info = Yii::$app->db->createCommand('select * from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stuid)->queryOne();
         /**微信信息**/
         $user_avatar = Yii::$app->db->createCommand('select avatarUrl, phone, is_bind, is_close from wxdeatil where stunumber = :stunumber')->bindValue(':stunumber', $stuid)->queryOne();
         /**订单信息**/
@@ -118,7 +118,7 @@ class UserController extends Controller
     public function getScgedular($stunumber, $year, $time) 
     {
         
-        $scgedular = Yii::$app->db->createCommand('select * from scgedular where stunumber = :stunumber and schoolyear = :year and semster = :time')
+        $scgedular = Yii::$app->db->createCommand('select * from user_scgedular where stunumber = :stunumber and schoolyear = :year and semster = :time')
         ->bindValue(':stunumber', $stunumber)
         ->bindValue(':year', $year)
         ->bindValue(':time', $time)
