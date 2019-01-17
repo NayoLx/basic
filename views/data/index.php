@@ -25,7 +25,7 @@ $this->title = '实时指标';
     <div class="panel-heading">
         <form id="myfrom" name="myform" action="">
             <table width="100%" class="table table-bordered">
-                <a type="submit" class="btn btn-primary btncls" id="search" href="<?=Url::toRoute('/data/report') ?>"><i class="glyphicon glyphicon-search"></i> 订单报表  </a>
+                <a type="submit" class="btn btn-primary btncls" id="search" href="<?=Url::toRoute(['/data/report', 'type'=> 1]) ?>"><i class="glyphicon glyphicon-search"></i> 订单报表  </a>
             </table>
         </form>
     </div>

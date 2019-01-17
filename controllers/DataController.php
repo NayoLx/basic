@@ -69,9 +69,72 @@ class DataController extends Controller
 
        return $this->render('index', $params);
     }
+
     public function actionReport()
     {
     	$params = [];
+    	/*type = 3 最近7日 type = 2 最近30日*/
+    	$type = Yii::$app->request->get('type', '');
+    	$line_order_data = [];
+    	$table_order_data = [];
+
+    	if ($type == '1') {
+    		$week_time = $this->get_weeks();
+    	    for ( $i = 1; $i <= 7; $i++ ) {
+    	        $chart_data_all[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59'")->queryAll();
+    	        $chart_data_success[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '4'")->queryAll();
+    	        $chart_data_doing[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '2' or status = '3'")->queryAll();
+    	        $chart_data_close[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '5'")->queryAll();
+
+    	        $chart_report[$i] = ['week_time' => $week_time[$i], 'chart_data_all' => $chart_data_all[$i], 'chart_data_success' => $chart_data_success[$i], 'chart_data_doing' => $chart_data_doing[$i], 'chart_data_close' => $chart_data_close[$i]];
+    	    }
+    	}
+    	elseif ($type == '2') {
+    		$time = date('Y-m-d');	
+    		$last_time = date('Y-m-d', strtotime('-30 day'));
+    		$week_time = $this->get_month();
+            for ( $i = 1; $i <= 30; $i++ ) {
+    	        $chart_data_all[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59'")->queryAll();
+    	        $chart_data_success[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '4'")->queryAll();
+    	        $chart_data_doing[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '2' or status = '3'")->queryAll();
+    	        $chart_data_close[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '5'")->queryAll();
+
+    	        $chart_report[$i] = ['week_time' => $week_time[$i], 'chart_data_all' => $chart_data_all[$i], 'chart_data_success' => $chart_data_success[$i], 'chart_data_doing' => $chart_data_doing[$i], 'chart_data_close' => $chart_data_close[$i]];
+    	    }
+    	}
+
+    	$params['chart_data_all'] = $chart_data_all;
+    	$params['chart_data_success'] = $chart_data_success;
+    	$params['chart_data_doing'] = $chart_data_doing;
+    	$params['chart_data_close'] = $chart_data_close;
+    	$params['week_time'] = $week_time;
+    	$params['chart_report'] = $chart_report;
+
     	return $this->render('report', $params);
     }
+
+    /**
+     * 获取最近7天所有日期
+     */
+    static function get_weeks($time = '', $format='Y-m-d'){
+      $time = $time != '' ? $time : time();
+      //组合数据
+      $date = [];
+      for ($i=1; $i<=7; $i++){
+        $date[$i] = date($format ,strtotime( '+' . $i-7 .' days', $time));
+      }
+      return $date;
+    }   
+    /**
+     * 获取最近30天所有日期
+     */
+    static function get_month($time = '', $format='Y-m-d'){
+      $time = $time != '' ? $time : time();
+      //组合数据
+      $date = [];
+      for ($i=1; $i<=30; $i++){
+        $date[$i] = date($format ,strtotime( '+' . $i-30 .' days', $time));
+      }
+      return $date;
+    }  
 }

@@ -61,10 +61,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <form action="" method="get">
                     <div class="top">
                         <div clas="top-left">
-                            <a href="" class="btn btn-success">今天</a>
-                            <a href="" class="btn btn-success">昨日</a>
-                            <a href="" class="btn btn-success">最近7天</a>
-                            <a href="" class="btn btn-success">最近30天</a>
+                            <a href="<?= Url::toRoute(['data/report', 'type' => 1]) ?>" class="btn btn-success">最近7天</a>
+                            <a href="<?= Url::toRoute(['data/report', 'type' => 2]) ?>" class="btn btn-success">最近30天</a>
                         </div>
                         <div clas="top-right">
                             <div>
@@ -75,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <input type="date" class="form-control" name="time_end" value="<?php if (!empty($endTime)) {echo date('Y-m-d', $endTime);} ?>">
                             </div>
                             <div>
-                                <input type="submit" class="form-control btn btn-success" name="submit" value="查询">
+                                <a class="form-control btn btn-success" name="submit" >查询</a>
                             </div>
                         </div>
                     </div>
@@ -84,9 +82,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="data_box" id="data_box" style="height: 400px;width:810px;">
 
                     </div>
-                    <div class="table_box" id="table_box">
-                        <div class="table_wap"></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -94,7 +89,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="panel-body" id="auth_success">
             <table class="table">
                 <tr>
-                    <td colspan="6"><span style="color: #5bc0de;"></span><b>详细列表</b></td>
+                    <td colspan="4"><span style="color: #5bc0de;"></span><b>详细列表</b></td>
+
                     <td class="text-right">
                         <input class="btn btn-primary" id="btn_export" type="button" value="导出(xlsx)">
                     </td>
@@ -106,13 +102,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th width="20%">待完成订单数</th>
                     <th width="20%">取消订单数</th>
                 </tr>
+                <?php if($chart_report):?>
+                	<?php foreach($chart_report as $key => $item): ?>
                 <tr>
-                	<td></td>
-                	<td></td>
-                	<td></td>
-                	<td></td>
-                	<td></td>
+                	<td><?=$item['week_time']?></td>
+                	<td><?=count($item['chart_data_all'])?></td>
+                	<td><?=count($item['chart_data_success'])?></td>
+                	<td><?=count($item['chart_data_doing'])?></td>
+                	<td><?=count($item['chart_data_close'])?></td>
                 </tr>
+                    <?php endforeach; ?>
+                <?php endif;?>
             </table>
         </div>
 
@@ -156,7 +156,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    data: []
+                    data: [<?php foreach ($week_time as $key => $value) {
+            		                echo "'".$value."',";
+            	               }?>]
                 },
                 yAxis : [
                     {
@@ -181,7 +183,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         },
                         stack: '总订单',
-                        data: []
+                        data: [<?php foreach ($chart_data_all as $key => $value) {
+            		                $str = count($value) ;
+            		                echo "'".$str."',";
+            	               }?>]
                     },
                     {
                         name: '成功订单',
@@ -195,7 +200,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         },
                         stack: '成功订单',
-                        data: []
+                        data: [<?php foreach ($chart_data_success as $key => $value) {
+            		                $str = count($value) ;
+            		                echo "'".$str."',";
+            	               }?>]
                     },
                     {
                         name: '待完成订单',
@@ -209,7 +217,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         },
                         stack: '待完成订单',
-                        data: []
+                        data: [<?php foreach ($chart_data_doing as $key => $value) {
+            		                $str = count($value) ;
+            		                echo "'".$str."',";
+            	               }?>]
                     },
                     {
                         name: '取消订单',
@@ -223,7 +234,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         },
                         stack: '取消订单',
-                        data: []
+                        data: [<?php foreach ($chart_data_close as $key => $value) {
+            		                $str = count($value) ;
+            		                echo "'".$str."',";
+            	               }?>]
                     }
                 ]
             };

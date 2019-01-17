@@ -67,7 +67,7 @@ class MyController extends Controller
         preg_match_all($cookie_name, $content, $cookie_info);
         $cookie_value = $cookie_info[1][0];
 
-        $grad = Yii::$app->db->createCommand('select * from user_stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();
+        $grad = Yii::$app->db->createCommand('select * from user_stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();queryOne();
         if ($grad == false) {
             Yii::$app->db->createCommand()->insert('user_stugrade', [
                 'stunumber' => $username,
