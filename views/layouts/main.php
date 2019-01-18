@@ -36,25 +36,24 @@ AppAsset::register($this);
         ],
     ]);
     echo Nav::widget([
+        'options' => ['class' => 'navbar-nav navbar-right'],//显示在右边
+        'items' => [
+            Yii::$app->session['isLogin'] != 1 ? (
+            ['label'=>'登录','url'=>['/site/login']]
+            ) : '',
+            Yii::$app->session['isLogin'] == 1 ? (
+                Yii::$app->session['username'] . ',欢迎回来' ." ". Html::a('退出',['/member/logout'])
+            ) : '',
+        ],
+    ]);
+    echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => '首页', 'url' => ['/site/index']],
-            ['label' => '订单列表', 'url' => ['/order/orderlist']],
-            ['label' => '用户列表', 'url' => ['/user/index']],
-            ['label' => '数据分析', 'url' => ['/data/index']],
-            ['label' => '系统配置', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest ? (
-                ['label' => '登陆', 'url' => ['/my/login2']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
+            Yii::$app->session['isLogin'] != 1 ? (['label' => '订单列表', 'url' => ['/order/orderlist']]) : '',
+            Yii::$app->session['isLogin'] != 1 ? ['label' => '用户列表', 'url' => ['/user/index']] : '',
+            Yii::$app->session['isLogin'] != 1 ? ['label' => '数据分析', 'url' => ['/data/index']] : '',
+            Yii::$app->session['isLogin'] != 1 ? ['label' => '系统配置', 'url' => ['/site/contact']] : '',
         ],
     ]);
     NavBar::end();
@@ -65,7 +64,7 @@ AppAsset::register($this);
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
         <?= Alert::widget() ?>
-        <?= $content ?>
+        <?=$content ?>
     </div>
 </div>
 

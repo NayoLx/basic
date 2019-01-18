@@ -7,41 +7,75 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = 'Login';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to login:</p>
+<style>
 
-    <?php $form = ActiveForm::begin([
-        'id' => 'login-form',
-        'layout' => 'horizontal',
-        'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-            'labelOptions' => ['class' => 'col-lg-1 control-label'],
-        ],
-    ]); ?>
+    .copyright_inner p {
+        line-height: 23px;
+        color: #fff;
+    }
 
-        <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+    .copyright_inner a {
+        line-height: 23px;
+        color: #fff;
+    }
 
-        <?= $form->field($model, 'password')->passwordInput() ?>
+    body{
+        padding-top:40px;
+        padding-bottom:40px;
+        background-color:#eee
+    }
 
-        <?= $form->field($model, 'rememberMe')->checkbox([
-            'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
-        ]) ?>
+    .form-signin{
+        max-width:330px;
+        padding:15px;
+        margin:0 auto
+    }
 
-        <div class="form-group">
-            <div class="col-lg-offset-1 col-lg-11">
-                <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-            </div>
-        </div>
+    .form-signin .checkbox,.form-signin .form-signin-heading{
+        margin-bottom:10px
+    }
 
-    <?php ActiveForm::end(); ?>
+    .form-signin .checkbox{
+        font-weight:400
+    }
 
-    <div class="col-lg-offset-1" style="color:#999;">
-        You may login with <strong>admin/admin</strong> or <strong>demo/demo</strong>.<br>
-        To modify the username/password, please check out the code <code>app\models\User::$users</code>.
-    </div>
+    .form-signin .form-control{
+        position:relative;
+        height:auto;
+        -webkit-box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        box-sizing:border-box;
+        padding:10px;
+        font-size:16px
+    }
+
+    .form-signin .form-control:focus{
+        z-index:2
+    }
+
+    .form-signin input[type=text]{
+        margin-bottom:10px;
+        border-bottom-right-radius:0;
+        border-bottom-left-radius:0;
+    }
+
+    .form-signin input[type=password]{
+        margin-bottom:10px;
+        border-top-left-radius:0;
+        border-top-right-radius:0;
+    }
+</style>
+
+<div class="container">
+    <form class="form-signin" method="post" action="">
+        <h2 class="form-signin-heading">账户登录</h2>
+        <label for="name" class="sr-only">账号</label>
+        <input type="text" name="name" class="form-control" placeholder=" 账号" required autofocus>
+        <label for="password" class="sr-only">密码</label>
+        <input type="password" name="password" class="form-control" placeholder="密码" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+    </form>
+
 </div>
