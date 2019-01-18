@@ -297,19 +297,19 @@ class OrderController extends Controller
            $order['orderlist'] = Yii::$app->db->createCommand("select * from order_detail where order_no LIKE :order_no")->bindValue(':order_no', '%'.$order_no.'%')->queryAll();
        }
        if(!empty($user_name)) {
-           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_name like :user_name')->bindValue(':user_name', '%'.$user_name.'%')->queryAll();
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_name LIKE :user_name')->bindValue(':user_name', '%'.$user_name.'%')->queryAll();
        }
        if(!empty($user_id)) {
-           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_id like :user_id')->bindValue(':user_id', '%'.$user_id.'%')->queryAll();
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_stunum LIKE :user_id')->bindValue(':user_id', '%'.$user_id)->queryAll();
        }
-       if(!empty($user_phone)) {
-           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_phone like :user_phone')->bindValue(':user_phone', '%'.$user_phone.'%')->queryAll();
-       }
+       // if(!empty($user_phone)) {
+       //     $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where user_phone LIKE :user_phone')->bindValue(':user_phone', '%'.$user_phone.'%')->queryAll();
+       // }
        if(!empty($staff_name)) {
-           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where staff_name like :staff_name')->bindValue(':staff_name', '%'.$staff_name.'%')->queryAll();
+           $order['orderlist'] = Yii::$app->db->createCommand('select * from order_detail where staff_name LIKE :staff_name')->bindValue(':staff_name', '%'.$staff_name.'%')->queryAll();
        }
        if(!empty($staff_id)) {
-           $order['orderlist']= Yii::$app->db->createCommand('select * from order_detail where staff_id like :staff_id')->bindValue(':staff_id', '%'.$staff_id.'%')->queryAll();
+           $order['orderlist']= Yii::$app->db->createCommand('select * from order_detail where staff_stunum LIKE :staff_id')->bindValue(':staff_id', '%'.$staff_id.'%')->queryAll();
        }
 
        return $order;

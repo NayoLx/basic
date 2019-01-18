@@ -22,15 +22,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tbody>
                 <tr >
                     <td width="10%"  class="text-right">用户姓名：</td>
-                    <td width="20%" class="text-left"><input type="text" class="form-control" name="user_name" id="user_name"></td>
+                    <td width="20%" class="text-left"><input type="text" class="form-control" name="user_name" id="user_name" value="<?=$gets['user_name']?>"></td>
                     <td width="10%"  class="text-right">用户学号：</td>
-                    <td width="20%" class="text-left"><input type="text" class="form-control" name="user_id" id="user_id" ></td>
+                    <td width="20%" class="text-left"><input type="text" class="form-control" name="user_id" id="user_id" value="<?=$gets['user_id']?>"></td>
                     <td class="text-right">用户电话：</td>
-                    <td class="text-left"><input type="text" class="form-control" name="phone" id="phone" ></td>
+                    <td class="text-left"><input type="text" class="form-control" name="phone" id="phone" value="<?=$gets['phone']?>"></td>
                 </tr>
                 <tr class="search">
                     <td colspan="6"  class="text-center">
-                        <button type="submit" class="btn btn-primary btncls" id="search">查 询  </button>
+                        <a type="submit" class="btn btn-primary btncls" id="search">查 询  </a>
                         <a class="btn btn-default btncls" href="">重 置 </a>
                     </td>
                 </tr>
@@ -93,12 +93,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script type="text/javascript">
     $(function () {
-        var filterUrl ='<?=Url::toRoute("user/index")?>';
-        $('#search').click(function(){
-
-            $('#search-form').attr('action',filterUrl);
-            $('#search-form').submit();
-            return false;
+        $('#search').bind("click", function () {
+            var export_url = "?r=user/index&user_name="+$("#user_name").val()+"&user_id="+$("#user_id").val() + "&phone=" + $("#phone").val();
+                window.location.href = export_url;
         })
     })
 

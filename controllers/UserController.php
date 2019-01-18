@@ -31,31 +31,31 @@ class UserController extends Controller
     public function fuzzysearch()
     {
         $request = \yii::$app->request;
-        $user_no = $request->get('user_no');
-        $user_name = $request->get('user_name');
-        $user_phone = $request->get('user_phone');
+        $user_id = $request->get('user_id', '');
+        $user_name = $request->get('user_name', '');
+        $user_phone = $request->get('user_phone', '');
         /**
          * 查询过滤处理
          */
         $order= [];
         $get = [];
-        $get['user_no'] = empty($user_no) ? "" : $user_no;
+        $get['user_id'] = empty($user_id) ? "" : $user_id;
         $get['user_name'] = empty($user_name) ? "" : $user_name;
-        $get['user_phone'] = empty($user_phone) ? "" : $user_phone;
+        $get['phone'] = empty($user_phone) ? "" : $user_phone;
 
 
         $order['gets'] = $get;
         $order['user_list'] = Yii::$app->db->createCommand('select * from user_student')->queryAll();
 
-        if(!empty($order_no)) {
-            $order['user_list'] = Yii::$app->db->createCommand("select * from user_student where stunumber LIKE :user_no")->bindValue(':order_no', '%'.$order_no)->queryAll();
+        if(!empty($user_id)) {
+            $order['user_list'] = Yii::$app->db->createCommand("select * from user_student where stunumber LIKE :user_no")->bindValue(':user_no', '%'.$user_id.'%')->queryAll();
         }
         if(!empty($user_name)) {
-            $order['user_list'] = Yii::$app->db->createCommand('select * from user_student where stuname like :user_name')->bindValue(':user_name', '%'.$user_name.'%')->queryAll();
+            $order['user_list'] = Yii::$app->db->createCommand('select * from user_student where stuname LIKE :user_name')->bindValue(':user_name', '%'.$user_name.'%')->queryAll();
         }
-        if(!empty($user_id)) {
-            $order['user_list'] = Yii::$app->db->createCommand('select * from user_student where phone like :user_phone')->bindValue(':user_phone', '%'.$user_phone)->queryAll();
-        }
+        // if(!empty($user_id)) {
+        //     $order['user_list'] = Yii::$app->db->createCommand('select * from user_student where phone like :user_phone')->bindValue(':user_phone', '%'.$user_phone)->queryAll();
+        // }
 
 
         return $order;

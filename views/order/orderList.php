@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <tr class="search">
                         <td colspan="6"  class="text-center">
-                            <button type="submit" class="btn btn-primary btncls" id="search"><i class="glyphicon glyphicon-search"></i> 查 询  </button>
+                            <a type="submit" class="btn btn-primary btncls" id="search"><i class="glyphicon glyphicon-search"></i> 查 询  </a>
 <!--                             <a class="btn btn-primary btncls" href="--><?//=Url::toRoute("/order/orderlist)") ?><!--"><i class="glyphicon glyphicon-search"></i> 查 询  </a>-->
                             <!-- <a type="submit" class="btn btn-primary btncls" href="<?//=Url::toRoute(["order/orderlist", 'order_no' => $gets['order_no'], 'user_name' =>$gets['user_name'], 'user_id'=>$gets['user_id'], 'user_phone'=>$gets['user_phone'], 'staff_name'=>$gets['staff_name'],'staff_id'=>$gets['staff_id']])?>"><i class="glyphicon glyphicon-search"></i> 查 询  </a> -->
                             <a class="btn btn-default btncls" href="javascript:void(0)">重 置 </a>
@@ -121,12 +121,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script type="text/javascript">
     $(function(){
-
-            $('#search').click(function(){
-                var filterUrl ='<?=Url::toRoute("/order/orderlist")?>';
-                $('#search-form').attr('action',filterUrl);
-                $('#search-form').submit();
-                return false;
+            $('#search').bind("click", function () {
+                var export_url = "?r=order/orderlist&order_no="+$("#order_no").val()+"&user_name="+$("#user_name").val() + "&user_id=" + $("#user_id").val() + "&user_phone=" + $("#user_phone").val() + "&staff_name=" + $("#staff_name").val() + "&staff_id=" + $("#staff_id").val();
+                window.location.href = export_url;
             })
         })
 </script>
