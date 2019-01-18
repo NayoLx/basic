@@ -66,14 +66,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <div clas="top-right">
                             <div>
-                                <input type="date" class="form-control" name="time_start" value="<?php if (!empty($startTime)) {echo date('Y-m-d', $startTime);} ?>">
+                                <input type="date" class="form-control" name="time_start" id='time_start' value="<?php if ($startTime) {echo date('Y-m-d', time($startTime));} ?>">
                             </div>
                             <div><span> _ </span></div>
                             <div>
-                                <input type="date" class="form-control" name="time_end" value="<?php if (!empty($endTime)) {echo date('Y-m-d', $endTime);} ?>">
+                                <input type="date" class="form-control" name="time_end"  id='time_end' value="<?php if ($endTime) {echo date('Y-m-d', time($endTime));} ?>">
                             </div>
                             <div>
-                                <a class="form-control btn btn-success" name="submit" >查询</a>
+                                <a class="form-control btn btn-success" id="submit" >查询</a>
                             </div>
                         </div>
                     </div>
@@ -250,14 +250,10 @@ $this->params['breadcrumbs'][] = $this->title;
             getdata();
         })
 
-        // $("#btn_export").bind("click", function () {
-        //     var getUrl = '<?=Url::toRoute("/datas/report/export-order-count")?>';
-        //     // var export_url = "export-order-count?start="+$("#startTime").val()+"&end="+$("#endTime").val()+"&type=<?php //echo $type; ?>//";
-        //     // window.open(export_url);
-        //     $('#export-form').attr('action', getUrl);
-        //     $('#export-form').submit();
-        //     return false;
-        // });
+        $("#submit").bind("click", function () {
+            var export_url = "?r=data/report&type=3&start="+$("#time_start").val()+"&end="+$("#time_end").val();
+            window.location.href = export_url;
+        });
 
     });
 </script>

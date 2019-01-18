@@ -73,13 +73,17 @@ class DataController extends Controller
     public function actionReport()
     {
     	$params = [];
-    	/*type = 3 最近7日 type = 2 最近30日*/
+    	/*type = 1 最近7日 type = 2 最近30日*/
     	$type = Yii::$app->request->get('type', '');
-    	$line_order_data = [];
-    	$table_order_data = [];
+    	$start_at = Yii::$app->request->get('start', '');
+    	$end_at = Yii::$app->request->get('end', '');
 
     	if ($type == '1') {
     		$week_time = $this->get_weeks();
+
+    		$start_at = date('Y-m-d', strtotime('-6 day'));
+    		$end_at = date('Y-m-d');
+    		echo $start_at;
     	    for ( $i = 1; $i <= 7; $i++ ) {
     	        $chart_data_all[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59'")->queryAll();
     	        $chart_data_success[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '4'")->queryAll();
@@ -89,11 +93,27 @@ class DataController extends Controller
     	        $chart_report[$i] = ['week_time' => $week_time[$i], 'chart_data_all' => $chart_data_all[$i], 'chart_data_success' => $chart_data_success[$i], 'chart_data_doing' => $chart_data_doing[$i], 'chart_data_close' => $chart_data_close[$i]];
     	    }
     	}
-    	elseif ($type == '2') {
-    		$time = date('Y-m-d');	
-    		$last_time = date('Y-m-d', strtotime('-30 day'));
+    	if ($type == '2') {
     		$week_time = $this->get_month();
+            $start_at = date('Y-m-d', strtotime('-29 day'));
+            $end_at = date('Y-m-d');
+
             for ( $i = 1; $i <= 30; $i++ ) {
+    	        $chart_data_all[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59'")->queryAll();
+    	        $chart_data_success[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '4'")->queryAll();
+    	        $chart_data_doing[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '2' or status = '3'")->queryAll();
+    	        $chart_data_close[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '5'")->queryAll();
+
+    	        $chart_report[$i] = ['week_time' => $week_time[$i], 'chart_data_all' => $chart_data_all[$i], 'chart_data_success' => $chart_data_success[$i], 'chart_data_doing' => $chart_data_doing[$i], 'chart_data_close' => $chart_data_close[$i]];
+    	    }
+    	}
+    	if ($type == '3') {
+    		$datetime_start = date_create($start_at);
+            $datetime_end = date_create($end_at);
+            $days = date_diff($datetime_start, $datetime_end)->days;
+
+            $week_time = $this->get_time_bt($start_at, $end_at);
+            for ( $i = 0; $i <= $days; $i++ ) {
     	        $chart_data_all[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59'")->queryAll();
     	        $chart_data_success[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '4'")->queryAll();
     	        $chart_data_doing[$i] = Yii::$app->db->createCommand("select * from order_detail where push_time between '$week_time[$i] 00:00:00' and '$week_time[$i] 23:59:59' and status = '2' or status = '3'")->queryAll();
@@ -109,6 +129,9 @@ class DataController extends Controller
     	$params['chart_data_close'] = $chart_data_close;
     	$params['week_time'] = $week_time;
     	$params['chart_report'] = $chart_report;
+ 
+    	$params['startTime'] = $start_at;
+    	$params['endTime'] = $end_at;
 
     	return $this->render('report', $params);
     }
@@ -137,4 +160,19 @@ class DataController extends Controller
       }
       return $date;
     }  
-}
+
+    /**
+     * 两个时间相差的时间差
+     */
+    static function get_time_bt($start_at, $end_at) {
+    	$datetime_start = date_create($start_at);
+        $datetime_end = date_create($end_at);
+        $days = date_diff($datetime_start, $datetime_end)->days;
+        $date = [];
+
+        for ($i = 0; $i <= $days; $i++) {
+           $date[$i] = date("Y-m-d",strtotime("+".$i." day",strtotime($start_at)));
+        }
+        return $date;
+    }
+} 
