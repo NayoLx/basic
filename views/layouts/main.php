@@ -50,10 +50,11 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => '首页', 'url' => ['/site/index']],
-            Yii::$app->session['isLogin'] != 1 ? (['label' => '订单列表', 'url' => ['/order/orderlist']]) : '',
-            Yii::$app->session['isLogin'] != 1 ? ['label' => '用户列表', 'url' => ['/user/index']] : '',
-            Yii::$app->session['isLogin'] != 1 ? ['label' => '数据分析', 'url' => ['/data/index']] : '',
-            Yii::$app->session['isLogin'] != 1 ? ['label' => '系统配置', 'url' => ['/site/contact']] : '',
+            Yii::$app->session['isLogin'] == 1 ? (['label' => '订单列表', 'url' => ['/order/orderlist']]) : '',
+            Yii::$app->session['isLogin'] == 1 ? ['label' => '用户列表', 'url' => ['/user/index']] : '',
+            Yii::$app->session['isLogin'] == 1 ? ['label' => '数据分析', 'url' => ['/data/index']] : '',
+            Yii::$app->session['isLogin'] != 1 ? ['label' => '角色分派', 'url' => ['/system/index']] : '',
+            Yii::$app->session['isLogin'] == 1 ? ['label' => '系统配置', 'url' => ['/site/contact']] : '',
         ],
     ]);
     NavBar::end();
