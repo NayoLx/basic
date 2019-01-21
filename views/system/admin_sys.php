@@ -43,9 +43,9 @@ $this->params['breadcrumbs'][] = '角色管理';
                 <th width="10%">用户名</th>
                 <th width="15%">角色</th>
                 <th width="15%">邮箱</th>
-                <th width="10%">姓名</th>
+                <th width="8%">姓名</th>
                 <th width="10%">手机</th>
-                <th width="5%">是否启用</th>
+                <th width="7%">是否启用</th>
                 <th width="15%">操作</th>
             </tr>
             </thead>
@@ -72,9 +72,9 @@ $this->params['breadcrumbs'][] = '角色管理';
                         <?=$item['phone']?>
                     </td>
                     <td style="padding:12px;">
-                        <?php if($item['is_close']) {
-                            echo '禁用';
-                        } else { echo "已启用"; }?>
+                        <?php if($item['is_close'] == 'false') {
+                            echo '已启用';
+                        } else { echo '禁用'; }?>
                     </td>
 
                     <td style="padding:12px;">

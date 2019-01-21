@@ -93,6 +93,10 @@ class SystemController extends Controller
         return json_encode($e);
     }
 
+    public function actionsubmitedit(){
+
+    }
+
     public function actionAdminsetting()
     {
 

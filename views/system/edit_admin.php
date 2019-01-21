@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="panel panel-default">
     <div class="panel-heading text-center">
-        <h4>新建账号</h4>
+        <h4>账号修改</h4>
 
     </div>
     <div class="panel-body">
@@ -27,26 +27,6 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="col-md-6">
                 <input type="text" id="username" class="form-control required" placeholder="用户名" value="">
-            </div>
-
-            <div class="col-md-12" style="padding-top:15px;"></div>
-
-            <div class="col-md-3 text-right" style="padding:5px 0px 0px 0px;">
-                <span class="text-danger"><span class="	glyphicon glyphicon-asterisk"></span></span>
-                <b>密码</b>
-            </div>
-            <div class="col-md-6">
-                <input type="password" id="password" class="form-control required" placeholder="密码" >
-            </div>
-
-            <div class="col-md-12" style="padding-top:15px;"></div>
-
-            <div class="col-md-3 text-right" style="padding:5px 0px 0px 0px;">
-                <span class="text-danger"><span class="	glyphicon glyphicon-asterisk"></span></span>
-                <b>确认密码</b>
-            </div>
-            <div class="col-md-6">
-                <input type="password" id="password_confirm" class="form-control required" placeholder="确认密码" >
             </div>
 
             <div class="col-md-12" style="padding-top:15px;"></div>
@@ -100,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <script type="text/javascript">
     $(function(){
         $('#save').bind("click", function () {
-            var export_url = "?r=system/submitcreate";
+            var export_url = "?r=system/submitedit";
             var username = $("#username").val();
             var password = $("#password").val();
             var password_confirm = $("#password_confirm").val();
@@ -125,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     if (!res.success) {
                         alert(res.error);
                     } else {
-                        alert('新建成功！');
+                        alert('修改成功！');
                         setTimeout(function () {
                             window.location.href = '?r=system/index'
                         }, 500);

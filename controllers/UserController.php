@@ -132,4 +132,48 @@ class UserController extends Controller
         return $scgedular;
     }
 
+
+    public function actionLogin()
+    {
+        if(Yii::$app->session['Login'] ==1) {
+            return $this->goHome();
+        }
+
+        return $this->render('login');
+    }
+
+    public function actionDologin()
+    {
+        $e = new \stdClass();
+        $e -> success = false;
+        $username = Yii::$app->request->get('username', '');
+        $password = Yii::$app->request->get('password', '');
+
+        $has_user = Yii::$app->db->createCommand('select * from ht_user where username = :username')->bindValue(':username', $username)->queryOne();
+        if($has_user == '' || $has_user == []) {
+            $e -> error = '此账号无管理权限，请联系管理员';
+            return json_encode($e);
+        }
+        $check = Yii::$app->db->createCommand('select password from ht_user where username = :username')->bindValue(':username', $username)->queryOne();
+        if($password != $check['password']) {
+            $e -> error = '账号密码输入错误，请重新输入';
+            return json_encode($e);
+        }
+
+        Yii::$app->session['be_login'] = 1;
+        Yii::$app->session['username'] = $username;
+        $e -> success = true;
+        $e -> error = '登陆成功';
+
+        return $this->goHome();
+    }
+
+    public function actionLogout()
+    {
+        Yii::$app->session->remove('be_login');
+        Yii::$app->session->remove('username');
+
+        return $this->render('login');
+    }
+
 }
