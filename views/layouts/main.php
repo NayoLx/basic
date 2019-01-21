@@ -57,7 +57,7 @@ AppAsset::register($this);
             Yii::$app->session['be_login'] == 1 ? ['label' => '用户列表', 'url' => ['/user/index']] : '',
             Yii::$app->session['be_login'] == 1 ? ['label' => '数据分析', 'url' => ['/data/index']] : '',
             Yii::$app->session['be_login'] == 1 ? ['label' => '角色分派', 'url' => ['/system/index']] : '',
-            Yii::$app->session['be_login'] == 1 ? ['label' => '系统配置', 'url' => ['/site/contact']] : '',
+            Yii::$app->session['be_login'] == 1 ? ['label' => '系统配置', 'url' => ['/setting/index']] : '',
         ],
     ]);
     NavBar::end();
