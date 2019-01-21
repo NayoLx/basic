@@ -117,4 +117,81 @@ class SettingController extends controller
         $e -> title = '保存成功';
         return json_encode($e);
     }
+
+    //快递公司list
+    public function actionKuaidilist()
+    {
+        $params = [];
+        $keyword = Yii::$app->request->post('keyword', '');
+        if($keyword != '') {
+            $array_list = Yii::$app->db->createCommand("select * from kuaidi_bird WHERE k_name LIKE :k_name")->bindValue(':k_name', '%'.$keyword.'%')->queryAll();
+        }
+        else {
+            $array_list = Yii::$app->db->createCommand('select * from kuaidi_bird')->queryAll();
+        }
+        $params['array_list'] = $array_list;
+
+        return $this->render('kuaidi_list', $params);
+    }
+
+    //新增的页面
+    public function actionNewkuaidi()
+    {
+        return $this->render('newkuaidi');
+    }
+
+    public function actionAddnew()
+    {
+        $e = new \stdClass();
+        $kTagName = Yii::$app->request->post('kTagName','');
+        $kTagvalue = Yii::$app->request->post('kTagvalue','');
+        $first = substr($kTagvalue, 0,1);
+
+        Yii::$app->db->createCommand()->insert('api_baidu',[
+            'headfield' => $first,
+            'name' => $kTagName,
+            'value' => $kTagvalue,
+        ])->execute();
+
+        $e -> success = true;
+        $e -> title = '保存成功';
+        return json_encode($e);
+    }
+
+    public function actionEditnew()
+    {
+        $e = new \stdClass();
+        $id = Yii::$app->request->post('id','');
+        $kTagName = Yii::$app->request->post('kTagName','');
+        $kTagvalue = Yii::$app->request->post('kTagvalue','');
+        $first = substr($kTagvalue, 0,1);
+
+        Yii::$app->db->createCommand()->update('api_baidu',[
+            'headfield' => $first,
+            'name' => $kTagName,
+            'value' => $kTagvalue,
+        ],'id = :id')->bindValue(':id', $id)->execute();
+
+        $e -> success = true;
+        $e -> title = '保存成功';
+        return json_encode($e);
+    }
+
+    //修改的页面
+    public function actionEditkuaidi()
+    {
+        $request = \yii::$app->request;
+        $id = $request->get('id');
+        $params = [];
+        $choose = Yii::$app->db->createCommand('select * from kuaidi_bird where id = :id')->bindValue(':id', $id)->queryOne();
+        $params['choose'] = $choose;
+
+        return $this->render('editkuaidi', $params);
+    }
+    //删除
+    public function actionDeletekuaidi()
+    {
+
+    }
+
 }

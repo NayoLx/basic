@@ -27,6 +27,11 @@ $tabArr = [
         'name' => '百度云api设置',
         'url' => Url::toRoute(["/setting/baidusetting"])
     ],
+    [
+        'label' => 'mina_kuaidilist',
+        'name' => '快递公司列表',
+        'url' => Url::toRoute(["/setting/kuaidilist"])
+    ],
 ]
 ?>
 
