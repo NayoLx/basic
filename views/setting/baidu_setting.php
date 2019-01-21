@@ -36,7 +36,7 @@ use yii\helpers\Url;
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">百度secret key</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <input id="sckey" type="text" class="form-control" value="<?=$array_api['Secret Key']?>">
                                     </div>
                                 </div>

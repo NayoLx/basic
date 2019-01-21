@@ -36,13 +36,13 @@ use yii\helpers\Url;
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">REQURL</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <input id="requrl" type="text" class="form-control" value="<?=$array_api['ReqURL']?>">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">快递访问url</label>
-                                    <div class="col-md-8">
+                                    <div class="col-md-4">
                                         <input id="kuaidi_url" type="text" class="form-control" value="<?=$array_api['kuaidi_url']?>">
                                     </div>
                                 </div>
