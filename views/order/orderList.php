@@ -102,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td >
                         <a class="btn btn-primary" style="margin: 4px;" href="<?php echo Url::toRoute(['order/orderdetail', 'id' => $item['id']])?>">查看详情</a>
                         <?php if ($item['status'] == 1): ?>
-                          <a class="btn btn-success" style="margin: 4px;" >平台派单</a>
+                          <a class="btn btn-success" style="margin: 4px;" href="<?php echo Url::toRoute(['order/orderpai', 'id' => $item['id']])?>">平台派单</a>
                         <?php endif;?>
                     </td>
                 </tr>

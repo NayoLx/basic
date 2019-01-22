@@ -422,4 +422,10 @@ class OrderController extends Controller
 //           echo json_encode(array('state'=>5,'msg'=>$result));
 //       }
    }
+
+
+   public function actionOrderpai()
+   {
+       return $this->render('orderpai');
+   }
 }
