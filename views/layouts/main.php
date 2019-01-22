@@ -29,7 +29,7 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => '管理后台',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
@@ -58,7 +58,7 @@ AppAsset::register($this);
             Yii::$app->session['be_login'] == 1 ? ['label' => '数据分析', 'url' => ['/data/index']] : '',
             Yii::$app->session['be_login'] == 1 ? ['label' => '角色分派', 'url' => ['/system/index']] : '',
             Yii::$app->session['be_login'] == 1 ? (
-                    ['label' => '系统配置', 'url' => ['/setting/index']]
+                    ['label' => '系统配置', 'url' => ['/setting/curlsetting']]
             ) : '',
         ],
     ]);
