@@ -121,15 +121,7 @@ class SettingController extends controller
     //快递公司list
     public function actionKuaidilist()
     {
-        $params = [];
-        $keyword = Yii::$app->request->post('keyword', '');
-        if($keyword != '') {
-            $array_list = Yii::$app->db->createCommand("select * from kuaidi_bird WHERE k_name LIKE :k_name")->bindValue(':k_name', '%'.$keyword.'%')->queryAll();
-        }
-        else {
-            $array_list = Yii::$app->db->createCommand('select * from kuaidi_bird')->queryAll();
-        }
-        $params['array_list'] = $array_list;
+        $params = $this->fuzzysearch();
 
         return $this->render('kuaidi_list', $params);
     }
@@ -147,9 +139,9 @@ class SettingController extends controller
         $kTagvalue = Yii::$app->request->post('kTagvalue','');
         $first = substr($kTagvalue, 0,1);
 
-        Yii::$app->db->createCommand()->insert('api_baidu',[
+        Yii::$app->db->createCommand()->insert('kuaidi_bird',[
             'headfield' => $first,
-            'name' => $kTagName,
+            'k_name' => $kTagName,
             'value' => $kTagvalue,
         ])->execute();
 
@@ -166,9 +158,9 @@ class SettingController extends controller
         $kTagvalue = Yii::$app->request->post('kTagvalue','');
         $first = substr($kTagvalue, 0,1);
 
-        Yii::$app->db->createCommand()->update('api_baidu',[
+        Yii::$app->db->createCommand()->update('kuaidi_bird',[
             'headfield' => $first,
-            'name' => $kTagName,
+            'k_name' => $kTagName,
             'value' => $kTagvalue,
         ],'id = :id')->bindValue(':id', $id)->execute();
 
@@ -191,7 +183,29 @@ class SettingController extends controller
     //删除
     public function actionDeletekuaidi()
     {
+        $id = Yii::$app->request->get('id', ' ');
+        Yii::$app->db->createCommand()->update('kuaidi_bird', [
+            'is_delete' => 'true',
+        ], 'id = :id')->bindValue(':id', $id)->execute();
 
+        return $this->actionKuaidilist();
+
+
+    }
+
+    //模糊查询
+    public function fuzzysearch()
+    {
+        $keyword = Yii::$app->request->get('keyword', '');
+        $array_list = Yii::$app->db->createCommand('select * from kuaidi_bird')->queryAll();
+
+        if(!empty($keyword)) {
+            $array_list = Yii::$app->db->createCommand("select * from kuaidi_bird where k_name LIKE :k_name")->bindValue(':k_name', '%'.$keyword.'%')->queryAll();
+        }
+
+        $params['array_list'] = $array_list;
+
+        return $params;
     }
 
 }

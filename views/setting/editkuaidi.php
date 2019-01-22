@@ -14,11 +14,16 @@ use yii\helpers\Url;
 <div class="panel panel-default">
     <div style="font-size: 23px; text-align: center; margin: 10px 0 0 0;">----修改信息----</div>
     <div class="panel-body ">
-
+        <div class="form-group col-sm-12" style="display: none">
+            <label for="skillName" class="col-sm-4 control-label text-right">id：</label>
+            <div class="col-sm-4 text-left">
+                <input type="text"  class="form-control col-sm-3" id="tagid" value="<?=$choose['id']?>" placeholder="请输入名称">
+            </div>
+        </div>
         <div class="form-group col-sm-12">
             <label for="skillName" class="col-sm-4 control-label text-right">名称：</label>
             <div class="col-sm-4 text-left">
-                <input type="text"  class="form-control col-sm-3" id="tagName" placeholder="请输入名称" value="<?=$choose['name']?>">
+                <input type="text"  class="form-control col-sm-3" id="tagName" placeholder="请输入名称" value="<?=$choose['k_name']?>">
             </div>
         </div>
         <div class="form-group col-sm-12">
@@ -40,6 +45,7 @@ use yii\helpers\Url;
         $("#save").bind("click",function () {
             var kTagName = $("#tagName").val();
             var kTagvalue = $("#tagvalue").val();
+            var kTagId = $('#tagid').val();
             if(kTagName == null || kTagName == "" || kTagvalue == ''){
                 alert("请填写标签名称");
                 $("#tagName").focus();
@@ -50,11 +56,19 @@ use yii\helpers\Url;
                 url: "?r=setting/editnew",
                 dataType:"json",
                 data: {
+                    'id': kTagId,
                     'kTagName': kTagName,
                     'kTagvalue': kTagvalue,
                 },
                 success:function(res){
                     console.log(res)
+                    if(res.success) {
+                        alert(res.title)
+                        window.location.href = '?r=setting/kuaidilist'
+                    }
+                    else {
+                        alert(res.error)
+                    }
                 },
                 error:function(res){
                     //提示确认失败

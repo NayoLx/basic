@@ -43,7 +43,7 @@ use yii\helpers\Url;
             var kTagvalue = $("#tagvalue").val();
             if(kTagName == null || kTagName == "" || kTagvalue == ''){
                 alert("请填写标签名称");
-                $("#tagName").focus();
+                $("#kTagName").focus();
                 return false;
             }
             $.ajax({
@@ -56,6 +56,13 @@ use yii\helpers\Url;
                 },
                 success:function(res){
                    console.log(res)
+                    if(res.success) {
+                        alert(res.title)
+                        window.location.href = '?r=setting/kuaidilist'
+                    }
+                    else {
+                        alert(res.error)
+                    }
                 },
                 error:function(res){
                     //提示确认失败

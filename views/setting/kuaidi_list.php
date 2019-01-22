@@ -6,7 +6,8 @@
  * Time: 15:42
  */
 use yii\helpers\Url;
-
+//$this->title =  "快递列表";
+//$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?=$this->render("/setting/main_setting",['tab'=>'mina_kuaidilist'])?>
@@ -33,6 +34,7 @@ use yii\helpers\Url;
                 </thead>
                 <tbody>
                 <?php foreach ($array_list as $tag) : ?>
+                  <?php if($tag['is_delete'] != 'true'):?>
                     <tr>
                         <td class="text-center align-middle hqy-row-select"><?= $tag['id'] ?></td>
                         <td >
@@ -46,6 +48,7 @@ use yii\helpers\Url;
                             <a class="btn btn-danger btn-sm btn_delete" href="<?=Url::toRoute(['setting/deletekuaidi', 'id'=>$tag['id']]) ?>">删除</a> &nbsp;&nbsp;
                         </td>
                     </tr>
+                  <?php endif; ?>
                 <?php endforeach; ?>
                 </tbody>
             </table>
@@ -62,22 +65,7 @@ use yii\helpers\Url;
 <script type="text/javascript"> 
     $(function () {
         $('#search').bind('click', function () {
-            var s_url = '?r=setting/kuaidilist';
-            var keyword = $('#keyword').val();
-
-            window.location.href = s_url + '&keyword=' + keyword;
-
-            // $.ajax({
-            //     url: s_url,
-            //     type: 'POST',
-            //     dataType: 'json',
-            //     data: {
-            //         'keyword': keyword
-            //     },
-            //     success:function (res) {
-            //         location.reload(true);
-            //     }
-            // })
+            window.location.href = '?r=setting/kuaidilist&keyword=' + $('#keyword').val();
         })
     })
 </script>
