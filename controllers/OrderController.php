@@ -423,9 +423,57 @@ class OrderController extends Controller
 //       }
    }
 
-
+    /**
+     * @return string
+     * @throws Exception
+     *  分配订单 页面
+     */
    public function actionOrderpai()
    {
-       return $this->render('orderpai');
+       $id = Yii::$app->request->get('id', '');
+       $params = [];
+       $order = Yii::$app->db->createCommand('select * from order_detail where id = :id')->bindValue(':id', $id)->queryOne();
+       $canpickarray = Yii::$app->db->createCommand('select * from user_student')->queryAll();
+       $params['order'] = $order;
+       $params['can_pick_array'] = $canpickarray;
+
+       return $this->render('orderpai', $params);
+   }
+
+    /**
+     * @return string
+     * @throws Exception
+     * 后台分配订单
+     */
+   public function actionOrderpick()
+   {
+       $e = new \stdClass();
+       $e -> success = false;
+       $order_no = Yii::$app->request->get('order_no', '');
+       $staff_get = Yii::$app->request->get('staff', ' ');
+       $staff = explode(' ', $staff_get);
+       $time = date('y-m-d H:i:s',time());
+
+       $check = Yii::$app->db->createCommand()->update('order_detail', [
+           'staff_stunum' => $staff[0],
+           'staff_name' => $staff[1],
+           'status' => 2,
+           'status_labal' => '接单中',
+           'status_pick_time' => $time,
+       ], 'order_no = :order_no')->bindValue(':order_no', $order_no)->execute();
+
+       $e -> order_id = $order_no;
+       $e -> staff_name = $staff[1];
+       LogHelpers::orderLog(LogHelpers::ACTION_HT_PICK, $e);
+
+       if($check == 1) {
+           $e -> success = true;
+           $e -> error = '保存成功';
+           $e -> check = $check;
+           return json_encode($e);
+       }
+
+       $e -> error = '出错啦';
+       return json_encode($e);
    }
 }

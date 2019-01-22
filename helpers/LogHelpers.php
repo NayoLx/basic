@@ -18,6 +18,7 @@ class LogHelpers
     const ACTION_PICK_CLOSE = 5; //接单人关闭订单
     const ACTION_USER_CLOSE = 6; //用户关闭订单
     const ACTION_DELETE = 7; //用户删除订单
+    const ACTION_HT_PICK = 8; //后台分派订单
 
 
     // 操作员类型：0-用户;1-接单人;2-后台管理员; 3-系统
@@ -80,7 +81,12 @@ class LogHelpers
     		$order_id = $order -> order_id;
     		$operator_id = $order -> user_name;
     		$operator_type = LogHelpers::OPERATOR_TYPE_ENGINEER;
-    	} else {
+    	} elseif (self::ACTION_HT_PICK == $action) {
+            $content = '系统分派订单';
+            $order_id = $order -> order_id;
+            $operator_id = $order -> staff_name;
+            $operator_type = LogHelpers::OPERATOR_TYPE_ENGINEER;
+        } else {
     		return false ;
     	}
         $time = date('y-m-d H:i:s',time());
