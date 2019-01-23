@@ -11,6 +11,7 @@ use Yii;
 
 class LogHelpers
 {
+    /*订单日志*/
     const ACTION_CREATE = 1; // 订单创建
     const ACTION_PICK = 2; // 接单
     const ACTION_DOING = 3; // 处理中
@@ -26,6 +27,7 @@ class LogHelpers
     const OPERATOR_TYPE_ENGINEER = 1;
     const OPERATOR_TYPE_ADMIN = 2;
     const OPERATOR_TYPE_SYSTEM = 3;
+
 
     /**
      * 订单操作日志
@@ -105,8 +107,41 @@ class LogHelpers
     /**
      * 登录日志
      */
-    static function loginLog()
+    static function loginLog($type)
     {
+        $time = date('y-m-d H:i:s',time());
+        $admin = Yii::$app->session['username'];
+        if($type == 1) {
+            $log_type = 'login';
+        } else {
+            $log_type = 'logout';
+        }
 
+        Yii::$app->db->createCommand()->insert('login_log', [
+            'login_name' => $admin,
+            'login_at' => $time,
+            'log_type' => $log_type,
+        ])->execute();
+
+        return true;
+    }
+
+
+    /**
+     * 管理员操作日志
+     */
+    static function actionLog($action)
+    {
+        $time = date('y-m-d H:i:s',time());
+        $admin = $action -> admin;
+        $action = $action -> action;
+
+        Yii::$app->db->createCommand()->insert('action_log', [
+            'which_admin' => $admin,
+            'action' => $action,
+            'action_at' => $time,
+        ])->execute();
+
+        return true;
     }
 }

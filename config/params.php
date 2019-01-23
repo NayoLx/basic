@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'versionCode'=> "（V 1.1.0 ）chance 19",// 版本号
+    'versionCode'=> "（V 1.1.0 ）chance 20",// 版本号
     'adminEmail' => '690575679@qq.com',
 
     /**
@@ -17,7 +17,7 @@ return [
      * 快递api
      */
     'EBusinessID' => '1398770',
-    'AppKey' => 'ed1f2c12-2fe3-4ad5-9f78-0e7f745fde7d',
+    'AppKey' => 'ed1f2c12-2fe3-4ad5-9f78-0e7f745fde7d', 
     'ReqURL' => 'http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx',
     'kuaidi_url' => 'http://api.kdniao.com/api/dist',
 

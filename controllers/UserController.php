@@ -8,6 +8,7 @@
 
 namespace app\controllers;
 
+use app\helpers\LogHelpers;
 use Yii;
 use yii\db\Exception;
 use yii\web\Controller;
@@ -162,6 +163,7 @@ class UserController extends Controller
 
         Yii::$app->session['be_login'] = 1;
         Yii::$app->session['username'] = $username;
+        LogHelpers::loginLog(1);     //登陆log
         $e -> success = true;
         $e -> error = '登陆成功';
 
@@ -170,6 +172,7 @@ class UserController extends Controller
 
     public function actionLogout()
     {
+        LogHelpers::loginLog(0);     //登陆log
         Yii::$app->session->remove('be_login');
         Yii::$app->session->remove('username');
 
