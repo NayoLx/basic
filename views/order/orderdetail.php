@@ -9,6 +9,7 @@
 use yii\helpers\Html;
 use app\widgets\linkpage;
 use app\assets\AppAsset;
+use yii\helpers\Url;
 
 $this->title = '订单详情';
 $this->params['breadcrumbs'][] = '订单管理';
@@ -61,13 +62,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
                 <tr class="search">
                     <td colspan="6"  class="text-center">
-                        <a type="submit" class="btn btn-primary btncls" id="changeData">修改 </a>
+                        <?php if ($data['status'] != 6 && $data['status'] != 5): ?>
+                            <a class="btn btn-primary btncls" style=" float: right;" id="close_order">关闭订单</a>
+                        <?php endif;?>
+                        <?php if ($data['status'] == 1): ?>
+                            <a class="btn btn-primary btncls" style="background-color: #62C790; float: right; margin-right: 10px" <?=Url::toRoute(['order/orderpai', 'id' => $data['id']])?>>平台派单</a>
+                        <?php endif;?>
+                        <?php if ($data['status'] != 1 && $data['status'] != 2 && $data['status'] != 3): ?>
+                            <a class="btn btn-primary btncls" style=" float: right" id="reopen">重新打开订单</a>
+                        <?php endif;?>
                     </td>
                 </tr>
                 </tbody>
             </table>
     </form>
 </div>
+
 <div class="panel-body form-inline">
     <table class="table" style="border-top:none;">
         <tr>
@@ -119,5 +129,49 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <script type="text/javascript">
+    $(function () {
+        $('#close_order').click(function () {
+            var close_box = confirm('是否关闭该订单')
+            if(close_box == true)
+            {
+                $.ajax({
+                    url:'?r=order/htcloseorder&id=<?=$data['id'] ?>&orderid=<?=$data['order_no'] ?>',
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (res) {
+                        if(res.success){
+                            var url = '?r=order/orderdetail&id=<?=$data['id'] ?>';
+                            window.location.href = url;
+                        }
+                    }
+                })
+            }
+            else if(close_box == false)
+            {
+                console.log('false');
+            }
+        })
 
+        $('#reopen').click(function () {
+            var close_box = confirm('是否重新打开该订单')
+            if(close_box == true)
+            {
+                $.ajax({
+                    url:'?r=order/reopenorder&id=<?=$data['id'] ?>&orderid=<?=$data['order_no'] ?>',
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (res) {
+                        if(res.success){
+                            var url = '?r=order/orderdetail&id=<?=$data['id'] ?>';
+                            window.location.href = url;
+                        }
+                    }
+                })
+            }
+            else if(close_box == false)
+            {
+                console.log('false');
+            }
+        })
+    })
 </script>

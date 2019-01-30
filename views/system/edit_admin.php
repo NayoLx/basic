@@ -82,8 +82,6 @@ $this->params['breadcrumbs'][] = $this->title;
         $('#save').bind("click", function () {
             var export_url = "?r=system/submitedit";
             var username = $("#username").val();
-            var password = $("#password").val();
-            var password_confirm = $("#password_confirm").val();
             var realname = $("#realname").val();
             var email = $("#email").val();
             var mobile = $("#mobile").val();
@@ -94,8 +92,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 dataType: 'json',
                 data: {
                     username: username,
-                    password: password,
-                    password_confirm: password_confirm,
                     realname: realname,
                     email: email,
                     mobile: mobile,

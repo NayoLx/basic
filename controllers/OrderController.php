@@ -476,4 +476,69 @@ class OrderController extends Controller
        $e -> error = '出错啦';
        return json_encode($e);
    }
+
+   /**
+    * 后台关闭订单
+    */
+   public function actionHtcloseorder()
+   {
+       $e = new \stdClass();
+       $orderid = Yii::$app->request->get('orderid', '');
+       $id = Yii::$app->request->get('id', '');
+       $time = date('y-m-d H:i:s',time());
+
+       $check = Yii::$app->db->createCommand()->update('order_detail', [
+           'status' => 6,
+           'status_labal' => '后台人员关闭',
+           'status_finish_time' => $time,
+       ], 'id = :id')->bindValue(':id', $id)->execute();
+
+       $e -> order_id = $orderid;
+       $e -> staff_name = Yii::$app->session['username'];
+       LogHelpers::orderLog(LogHelpers::ACTION_HT_CLOSE, $e);
+
+       if($check == 1) {
+           $e -> success = true;
+           $e -> error = '保存成功';
+           $e -> check = $check;
+           return json_encode($e);
+       }
+
+       $e -> success = false;
+       $e -> error = '出错啦';
+       return json_encode($e);
+   }
+
+
+   /***
+    * 后台重新打开订单
+    */
+   public function actionReopenorder()
+   {
+       $e = new \stdClass();
+       $orderid = Yii::$app->request->get('orderid', '');
+       $id = Yii::$app->request->get('id', '');
+       $time = date('y-m-d H:i:s',time());
+
+       $check = Yii::$app->db->createCommand()->update('order_detail', [
+           'status' => 1,
+           'status_labal' => '等待中',
+           'status_finish_time' => $time,
+       ], 'id = :id')->bindValue(':id', $id)->execute();
+
+       $e -> order_id = $orderid;
+       $e -> staff_name = Yii::$app->session['username'];
+       LogHelpers::orderLog(LogHelpers::ACTION_HT_REOPEN, $e);
+
+       if($check == 1) {
+           $e -> success = true;
+           $e -> error = '保存成功';
+           $e -> check = $check;
+           return json_encode($e);
+       }
+
+       $e -> success = false;
+       $e -> error = '出错啦';
+       return json_encode($e);
+   }
 }

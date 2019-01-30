@@ -20,6 +20,8 @@ class LogHelpers
     const ACTION_USER_CLOSE = 6; //用户关闭订单
     const ACTION_DELETE = 7; //用户删除订单
     const ACTION_HT_PICK = 8; //后台分派订单
+    const ACTION_HT_CLOSE = 9; //后台人员关闭
+    const ACTION_HT_REOPEN = 10; //后台重新打开
 
 
     // 操作员类型：0-用户;1-接单人;2-后台管理员; 3-系统
@@ -88,6 +90,16 @@ class LogHelpers
             $order_id = $order -> order_id;
             $operator_id = $order -> staff_name;
             $operator_type = LogHelpers::OPERATOR_TYPE_ENGINEER;
+        } elseif (self::ACTION_HT_CLOSE == $action) {
+            $content = '后台人员关闭订单';
+            $order_id = $order -> order_id;
+            $operator_id = $order -> staff_name;
+            $operator_type = LogHelpers::OPERATOR_TYPE_ADMIN;
+        } elseif (self::ACTION_HT_REOPEN == $action) {
+            $content = '后台人员重新打开该订单';
+            $order_id = $order -> order_id;
+            $operator_id = $order -> staff_name;
+            $operator_type = LogHelpers::OPERATOR_TYPE_ADMIN;
         } else {
     		return false ;
     	}
