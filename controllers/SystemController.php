@@ -93,13 +93,58 @@ class SystemController extends Controller
         return json_encode($e);
     }
 
-    public function actionsubmitedit(){
+    public function actionSubmitedit()
+    {
+        $e = new \stdClass();
+        $e -> success = false;
+        $username = Yii::$app->request->get('username', '');
+        $realname = Yii::$app->request->get('realname', '');
+        $email = Yii::$app->request->get('email', '');
+        $phone = Yii::$app->request->get('mobile', '');
+        $is_close = Yii::$app->request->get('is_close', '');
 
+        if ($username == '') {
+            $e -> error = '用户名为空，请输入用户名！';
+            return json_encode($e);
+        }
+        if ($realname == '') {
+            $e -> error = '您的名字为空，请输入！';
+            return json_encode($e);
+        }
+        if ($email == '') {
+            $e -> error = '邮箱不能为空，请输入！';
+            return json_encode($e);
+        }
+        if ($phone == '') {
+            $e -> error = '手机号码不能为空，请输入！';
+            return json_encode($e);
+        }
+
+        $check = Yii::$app->db->createCommand('select * from ht_user where username = :username')->bindValue(':username', $username)->queryOne();
+
+        if (!$check) {
+            $e -> success = true;
+            Yii::$app->db->createCommand()->update('ht_user',[
+                'username' => $username,
+                'name' => $realname,
+                'e-mail' => $email,
+                'phone' => $phone,
+                'is_close' => 'false',
+            ])->execute();
+        }
+
+        return json_encode($e);
     }
 
     public function actionAdminsetting()
     {
+        $params = [];
+        $id = Yii::$app->request->get('id', '');
+        $user = Yii::$app->db->createCommand('select * from ht_user where id = :id')->bindValue(':id', $id)->queryOne();
 
+        $params['user'] = $user;
+
+        return $this->render('edit_admin', $params);
     }
 
     /***

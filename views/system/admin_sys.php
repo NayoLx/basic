@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = '角色管理';
 
                     <td style="padding:12px;">
                         <a href=""><span class="btn btn-success" style="padding:8px;">设置角色</span></a> &nbsp;&nbsp;
-                        <a href=""><span class="btn btn-primary" style="padding:8px;">编辑</span></a> &nbsp;&nbsp;
+                        <a  href="<?=Url::toRoute(['system/adminsetting', 'id' => $item['id']])?>"><span class="btn btn-primary" style="padding:8px;">编辑</span></a> &nbsp;&nbsp;
                     </td>
                 </tr>
             </tbody>
