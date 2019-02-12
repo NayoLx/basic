@@ -207,7 +207,7 @@ $this->params['breadcrumbs'][] = $this->title;
            if(close_box == true)
            {
                $.ajax({
-                   url:'?r=user/openaccount&id=<?=$info['stunumber'] ?>',
+                   url:'?r=user/closeaccount&id=<?=$info['stunumber'] ?>',
                    type: 'get',
                    dataType: 'json',
                    success: function (res) {
