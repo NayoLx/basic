@@ -166,4 +166,40 @@ class SystemController extends Controller
     {
 
     }
+
+    /**
+     * 解禁
+     */
+    public function actionOpenaccount()
+    {
+        $e = new \stdClass();
+        $request = \yii::$app->request;
+        $stuid = intval($request->get('id'));
+
+        Yii::$app->db->createCommand()->update('ht_user', [
+            'is_close' => 'false',
+        ], 'id = :id')->bindValue(':id', $stuid)->execute();
+
+        $e->success = true;
+
+        return json_encode($e);
+    }
+
+    /**
+     * 禁用账号
+     */
+    public function actionCloseaccount()
+    {
+        $e = new \stdClass();
+        $request = \yii::$app->request;
+        $stuid = intval($request->get('id'));
+
+        Yii::$app->db->createCommand()->update('ht_user', [
+            'is_close' => 'true',
+        ], 'id = :id')->bindValue(':id', $stuid)->execute();
+
+        $e->success = true;
+
+        return json_encode($e);
+    }
 }

@@ -64,7 +64,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="text-right">用户学生信息：</td>
                     <td class="text-left"><a id='openstu'>显示</a></td>
                     <td class="text-right">禁用状态：</td>
-                    <td class="text-left"><?php if($avatar['is_close']){echo '账号禁用中';}?></td>
+                    <td class="text-left">
+                        <?php if($info['is_close'] == 'true'): ?>
+                            <a class="btn btn-primary" style=" background-color: #b94a48; border: none" id="openAccount" >解禁</a>
+                        <?php else: ?>
+                            <a class="btn btn-primary" id="closeAccount">未禁用</a>
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <tr >
                     <td colspan="12" class="text-right">
@@ -195,5 +201,59 @@ $this->params['breadcrumbs'][] = $this->title;
             $('#updown').val(' 收 起 ');
         }
      })
+
+       $('#closeAccount').click(function () {
+           var close_box = confirm('是否关闭该用户')
+           if(close_box == true)
+           {
+               $.ajax({
+                   url:'?r=user/openaccount&id=<?=$info['stunumber'] ?>',
+                   type: 'get',
+                   dataType: 'json',
+                   success: function (res) {
+                       console.log(res)
+                       if (!res.success) {
+                           alert(res.error);
+                       } else {
+                           alert('禁用成功！');
+                           setTimeout(function () {
+                               window.location.href = '?r=user/info&id=<?=$info['stunumber'] ?>'
+                           }, 500);
+                       }
+                   }
+               })
+           }
+           else if(close_box == false)
+           {
+               console.log('false');
+           }
+       })
+
+       $('#openAccount').click(function () {
+           var close_box = confirm('是否解禁该用户')
+           if(close_box == true)
+           {
+               $.ajax({
+                   url:'?r=user/openaccount&id=<?=$info['stunumber'] ?>',
+                   type: 'get',
+                   dataType: 'json',
+                   success: function (res) {
+                       console.log(res)
+                       if (!res.success) {
+                           alert(res.error);
+                       } else {
+                           alert('解禁成功！');
+                           setTimeout(function () {
+                               window.location.href = '?r=user/info&id=<?=$info['stunumber'] ?>'
+                           }, 500);
+                       }
+                   }
+               })
+           }
+           else if(close_box == false)
+           {
+               console.log('false');
+           }
+       })
    })
 </script>

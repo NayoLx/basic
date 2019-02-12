@@ -179,4 +179,33 @@ class UserController extends Controller
         return $this->render('login');
     }
 
+    public function actionOpenaccount()
+    {
+        $e = new \stdClass();
+        $request = \yii::$app->request;
+        $stuid = intval($request->get('id'));
+
+        Yii::$app->db->createCommand()->update('user_student', [
+            'is_close' => 'false',
+        ], 'stunumber = :id')->bindValue(':id', $stuid)->execute();
+
+        $e->success = true;
+
+        return json_encode($e);
+    }
+
+    public function actionCloseaccount()
+    {
+        $e = new \stdClass();
+        $request = \yii::$app->request;
+        $stuid = intval($request->get('id'));
+
+        Yii::$app->db->createCommand()->update('user_student', [
+            'is_close' => 'true',
+        ], 'stunumber = :id')->bindValue(':id', $stuid)->execute();
+
+        $e->success = true;
+
+        return json_encode($e);
+    }
 }

@@ -67,7 +67,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <b>禁用状态</b>
             </div>
             <div class="col-md-6">
-                <input type="checkbox" style="width: 20px; height: 20px" id="is_close" checked><span style="line-height: 20px"> 禁用</span>
+                <?php if($user['is_close'] == 'true'): ?>
+                    <a class="btn btn-primary" style=" background-color: #b94a48; border: none" id="openAccount" >解禁</a>
+                <?php else: ?>
+                    <a class="btn btn-primary" style=" background-color: #b94a48; border: none" id="closeAccount" >禁用</a>
+                <?php endif; ?>
             </div>
 
             <div class="col-md-12" style="padding-top:15px;"></div>
@@ -122,6 +126,61 @@ $this->params['breadcrumbs'][] = $this->title;
                     console.log(res.responseText);
                 }
             })
+        })
+
+
+        $('#closeAccount').click(function () {
+            var close_box = confirm('是否关闭该账号')
+            if(close_box == true)
+            {
+                $.ajax({
+                    url:'?r=system/closeaccount&id=<?=$user['id'] ?>',
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (res) {
+                        console.log(res)
+                        if (!res.success) {
+                            alert(res.error);
+                        } else {
+                            alert('禁用成功！');
+                            setTimeout(function () {
+                                window.location.href = '?r=system/adminsetting&id=<?=$user['id'] ?>'
+                            }, 500);
+                        }
+                    }
+                })
+            }
+            else if(close_box == false)
+            {
+                console.log('false');
+            }
+        })
+
+        $('#openAccount').click(function () {
+            var close_box = confirm('是否解禁该账号')
+            if(close_box == true)
+            {
+                $.ajax({
+                    url:'?r=system/openaccount&id=<?=$user['id'] ?>',
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (res) {
+                        console.log(res)
+                        if (!res.success) {
+                            alert(res.error);
+                        } else {
+                            alert('解禁成功！');
+                            setTimeout(function () {
+                                window.location.href = '?r=system/adminsetting&id=<?=$user['id'] ?>'
+                            }, 500);
+                        }
+                    }
+                })
+            }
+            else if(close_box == false)
+            {
+                console.log('false');
+            }
         })
     })
 </script>
