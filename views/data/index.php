@@ -147,7 +147,7 @@ $this->title = '实时指标';
                         <div class="panel-body wares">
 
                             <div class="form-group col-sm-12">
-                                <label for="skillName" class="col-sm-6 control-label text-right">平台总订单：</label>
+                                <label for="skillName" class="col-sm-6 control-label text-right">上周总订单：</label>
                                 <div class="col-sm-6 text-left">
                                     <?php if($last_week_order['last_all'] ) {
                                         echo $last_week_order['last_all'] ;
@@ -155,7 +155,7 @@ $this->title = '实时指标';
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
-                                <label for="skillName" class="col-sm-6 control-label text-right">系统自动关闭订单：</label>
+                                <label for="skillName" class="col-sm-6 control-label text-right">上周系统自动关闭订单：</label>
                                 <div class="col-sm-6 text-left">
                                     <?php if($last_week_order['last_system_close'] ) {
                                         echo $last_week_order['last_system_close'] ;
@@ -163,7 +163,7 @@ $this->title = '实时指标';
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
-                                <label for="skillName" class="col-sm-6 control-label text-right">待完成订单：</label>
+                                <label for="skillName" class="col-sm-6 control-label text-right">上周待完成订单：</label>
                                 <div class="col-sm-6 text-left">
                                     <?php if($last_week_order['last_nofinish'] ) {
                                         echo $last_week_order['last_nofinish'] ;
@@ -171,7 +171,7 @@ $this->title = '实时指标';
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
-                                <label for="skillName" class="col-sm-6 control-label text-right">已取消订单：</label>
+                                <label for="skillName" class="col-sm-6 control-label text-right">上周已取消订单：</label>
                                 <div class="col-sm-6 text-left">
                                     <?php if($last_week_order['last_close_order'] ) {
                                         echo $last_week_order['last_close_order'] ;
