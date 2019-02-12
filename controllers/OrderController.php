@@ -65,6 +65,14 @@ class OrderController extends Controller
 
        $time = date('y-m-d H:i:s',time());
 
+       $check_account = Yii::$app->db->createCommand('select is_close from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
+
+       if ($check_account['is_close'] == 'true') {
+           $order->success = false;
+           $order->error = '该账号已被封，请联系管理员';
+           return json_encode($order);
+       }
+
        $check = Yii::$app->db->createCommand( 'select * from order_detail where user_stunum = :stunumber and status <> :status')
            ->bindValue(':stunumber', $stunumber['stunumber'])
            ->bindValue(':status', 5)
@@ -96,11 +104,15 @@ class OrderController extends Controller
            $order -> order_id = $order_no;
            $order -> user_name =  $stu_name['stuname'];
            LogHelpers::orderLog(LogHelpers::ACTION_CREATE, $order);
+           $order->success = true;
+           $order->error = '';
+           return json_encode($order);
 
-           return 'true';
        }
        else {
-           return 'false';
+           $order->success = false;
+           $order->error = '还有未处理的订单，暂无法下单';
+           return json_encode($order);
        }
    }
 
