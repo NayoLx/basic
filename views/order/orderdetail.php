@@ -62,14 +62,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
                 <tr class="search">
                     <td colspan="6"  class="text-center">
-                        <?php if ($data['status'] != 6 && $data['status'] != 5): ?>
+                        <?php if ($data['status'] != 6 && $data['status'] != 5 && $data['status'] != 4): ?>
                             <a class="btn btn-primary btncls" style=" float: right;" id="close_order">关闭订单</a>
                         <?php endif;?>
                         <?php if ($data['status'] == 1): ?>
                             <a class="btn btn-primary btncls" style="background-color: #62C790; float: right; margin-right: 10px" <?=Url::toRoute(['order/orderpai', 'id' => $data['id']])?>>平台派单</a>
                         <?php endif;?>
                         <?php if ($data['status'] != 1 && $data['status'] != 2 && $data['status'] != 3): ?>
-                            <a class="btn btn-primary btncls" style=" float: right" id="reopen">重新打开订单</a>
+                            <a class="btn btn-primary btncls" style=" float: right; margin-right: 10px" id="reopen">重新打开订单</a>
+                        <?php endif;?>
+                        <?php if ($data['status'] != 4 && $data['status'] != 5 && $data['status'] != 6): ?>
+                            <a class="btn btn-primary btncls" style=" float: right;  margin-right: 10px" id="finishorder">一键完成订单</a>
                         <?php endif;?>
                     </td>
                 </tr>
@@ -158,6 +161,28 @@ $this->params['breadcrumbs'][] = $this->title;
             {
                 $.ajax({
                     url:'?r=order/reopenorder&id=<?=$data['id'] ?>&orderid=<?=$data['order_no'] ?>',
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (res) {
+                        if(res.success){
+                            var url = '?r=order/orderdetail&id=<?=$data['id'] ?>';
+                            window.location.href = url;
+                        }
+                    }
+                })
+            }
+            else if(close_box == false)
+            {
+                console.log('false');
+            }
+        })
+        
+        $('#finishorder').click(function () {
+            var close_box = confirm('是否开启作弊器一键完成订单')
+            if(close_box == true)
+            {
+                $.ajax({
+                    url:'?r=order/onekey&id=<?=$data['id'] ?>&orderid=<?=$data['order_no'] ?>',
                     type: 'get',
                     dataType: 'json',
                     success: function (res) {

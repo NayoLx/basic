@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr >
                     <td class="text-center align-middle hqy-row-select"><?= $item['id'] ?></td>
                     <td >
-                        订单编号： <?= $item['order_no'] ?><br/>
+                        订单编号：<p style="color: #b94a48; font-weight: bold"><?= $item['order_no'] ?></p>
                         发起人： <?= $item['user_name'] ?><br/>
                         学号： <?= $item['user_stunum'] ?><br/>
                         所需性别： <?= $item['sex'] ?><br/>
