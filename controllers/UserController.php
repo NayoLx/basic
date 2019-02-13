@@ -160,6 +160,11 @@ class UserController extends Controller
             $e -> error = '账号密码输入错误，请重新输入';
             return json_encode($e);
         }
+        $check_close = Yii::$app->db->createCommand('select is_close from ht_user where username = :username')->bindValue(':username', $username)->queryOne();
+        if($check_close['is_close'] == 'true') {
+            $e -> error = '该账号已禁用，请联系管理员';
+            return json_encode($e);
+        }
 
         Yii::$app->session['be_login'] = 1;
         Yii::$app->session['username'] = $username;

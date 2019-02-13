@@ -68,8 +68,10 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="col-md-6">
                 <?php if($user['is_close'] == 'true'): ?>
+                    禁用中
                     <a class="btn btn-primary" style=" background-color: #b94a48; border: none" id="openAccount" >解禁</a>
                 <?php else: ?>
+                    未禁用
                     <a class="btn btn-primary" style=" background-color: #b94a48; border: none" id="closeAccount" >禁用</a>
                 <?php endif; ?>
             </div>
