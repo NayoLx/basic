@@ -55,18 +55,37 @@ class DataController extends Controller
         $start_at = date('Y-m-d H:i:s', strtotime('-6 day'));
         $end_at = date('Y-m-d H:i:s');
         $last_all = Yii::$app->db->createCommand("select * from order_detail where push_time between '$start_at' and '$end_at' ")->queryAll();
+        $last_finsih_close = Yii::$app->db->createCommand("select * from order_detail where push_time between '$start_at' and '$end_at'  and status = '4'")->queryAll();
         $last_system_close = Yii::$app->db->createCommand("select * from order_detail where push_time between '$start_at' and '$end_at'  and status = '7'")->queryAll();
         $last_nofinish = Yii::$app->db->createCommand("select * from order_detail where push_time between '$start_at' and '$end_at' and status = '2' or status = '3'")->queryAll();
         $last_close_order = Yii::$app->db->createCommand("select * from order_detail where push_time between '$start_at' and '$end_at' and status = '5'")->queryAll();
 
         $last_week_order['last_all'] = count($last_all);
         $last_week_order['last_system_close'] = count($last_system_close);
+        $last_week_order['last_finsih_close'] = count($last_finsih_close);
         $last_week_order['last_nofinish'] = count($last_nofinish);
         $last_week_order['last_close_order'] = count($last_close_order);
 
-    	$client_chart = [];
 
-    	/*订单类型饼图*/
+    	/**今天的订单比例*/
+    	$time =date('Y-m-d');
+        $today_all = Yii::$app->db->createCommand("select * from order_detail where push_time between '$time 00:00:00' and '$time 23:59:59' ")->queryAll();
+        $today_finsih_close = Yii::$app->db->createCommand("select * from order_detail where push_time between  '$time 00:00:00' and '$time 23:59:59'  and status = '4'")->queryAll();
+        $today_system_close = Yii::$app->db->createCommand("select * from order_detail where push_time between  '$time 00:00:00' and '$time 23:59:59' and (status = '7' or status = '6')")->queryAll();
+        $today_nofinish = Yii::$app->db->createCommand("select * from order_detail where push_time between  '$time 00:00:00' and '$time 23:59:59' and (status = '1' or status = '2' or status = '3')")->queryAll();
+        $today_close_order = Yii::$app->db->createCommand("select * from order_detail where push_time between  '$time 00:00:00' and '$time 23:59:59' and status = '5'")->queryAll();
+
+
+        $client_chart = [
+            ['name'=>'今日所有订单', 'value'=>count($today_all)],
+            ['name'=>'完成的订单', 'value'=>count($today_finsih_close)],
+            ['name'=>'未完成的订单', 'value'=>count($today_nofinish)],
+            ['name'=>'系统关闭订单', 'value'=>count($today_system_close)],
+            ['name'=>'取消订单', 'value'=>count($today_close_order)],
+        ];
+
+
+    	/**订单类型饼图*/
     	$need_order = Yii::$app->db->createCommand("select * from order_detail where type = 'N' ")->queryAll();
     	$Help_order = Yii::$app->db->createCommand("select * from order_detail where type = 'T' ")->queryAll();
     	$other_order = Yii::$app->db->createCommand("select * from order_detail where type = 'O' ")->queryAll();
@@ -82,6 +101,7 @@ class DataController extends Controller
     	$params['history_order_data'] = $history_order_data;
     	$params['order_type_chart'] = $order_type_chart;
     	$params['last_week_order'] = $last_week_order;
+        $params['client_chart'] = $client_chart;
 
        return $this->render('index', $params);
     }

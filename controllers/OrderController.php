@@ -73,9 +73,11 @@ class OrderController extends Controller
            return json_encode($order);
        }
 
-       $check = Yii::$app->db->createCommand( 'select * from order_detail where user_stunum = :stunumber and status <> :status')
+       $check = Yii::$app->db->createCommand( 'select * from order_detail where user_stunum = :stunumber and status = :status and status = :sclose and status = :sclos')
            ->bindValue(':stunumber', $stunumber['stunumber'])
-           ->bindValue(':status', 5)
+           ->bindValue(':status', 1)
+           ->bindValue(':sclose', 2)
+           ->bindValue(':sclos', 3)
            ->queryAll();
 
        /*处于未完成状态的订单不能超过两个*/

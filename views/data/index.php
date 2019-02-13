@@ -155,6 +155,14 @@ $this->title = '实时指标';
                                 </div>
                             </div>
                             <div class="form-group col-sm-12">
+                                <label for="skillName" class="col-sm-6 control-label text-right">上周完成订单：</label>
+                                <div class="col-sm-6 text-left">
+                                    <?php if($last_week_order['last_finsih_close'] ) {
+                                        echo $last_week_order['last_finsih_close'] ;
+                                    } else { echo "0";} ?>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-12">
                                 <label for="skillName" class="col-sm-6 control-label text-right">上周系统自动关闭订单：</label>
                                 <div class="col-sm-6 text-left">
                                     <?php if($last_week_order['last_system_close'] ) {
@@ -231,7 +239,7 @@ $this->title = '实时指标';
             var option2 = {
 
                 title : {
-                    text: '用户订单比例',
+                    text: '这周订单比例',
                     x:'center'
                 },
                 tooltip : {
@@ -253,9 +261,11 @@ $this->title = '实时指标';
                         radius : '55%',
                         center: ['50%', '60%'],
                         data:[
-                            {name: 'A', value: 1212},
-                            {name: 'B', value: 2323},
-                            {name: 'C', value: 1919}
+                            <?php if($client_chart) {
+                            foreach ($client_chart as $key => $item) {
+                                echo "{name: '{$item['name']}', value: {$item['value']}},";
+                            }
+                        }?>
                         ].sort(function (a, b) { return a.value - b.value; }),
                         roseType: 'radius',
                         label: {
