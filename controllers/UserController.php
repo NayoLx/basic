@@ -80,7 +80,7 @@ class UserController extends Controller
         /**微信信息**/
         $user_avatar = Yii::$app->db->createCommand('select avatarUrl, phone, is_bind, is_close from wxdeatil where stunumber = :stunumber')->bindValue(':stunumber', $stuid)->queryOne();
         /**订单信息**/
-        $orderlist = Yii::$app->db->createCommand("select * from order_detail where staff_stunum = :stunumber and status = 2 and status = 3")->bindValue(':stunumber', $stuid)->queryAll();
+        $orderlist = Yii::$app->db->createCommand("select * from order_detail where staff_stunum = :stunumber and (status = '2' or status = '3')")->bindValue(':stunumber', $stuid)->queryAll();
         /**课表*个人信息**/
         if($year == '' or $time == '') {
             $year = 2018;
@@ -93,7 +93,7 @@ class UserController extends Controller
         $status = ['status' => 0, 'year'=>$year, 'time'=> $time ];
 
         if ($order_type == 1) {
-            $orderlist = Yii::$app->db->createCommand('select * from order_detail where status = 4 and staff_stunum = :stunumber')->bindValue(':stunumber', $stuid)->queryAll();
+            $orderlist = Yii::$app->db->createCommand("select * from order_detail where status = '4' and staff_stunum = :stunumber")->bindValue(':stunumber', $stuid)->queryAll();
             $status['status'] =  1;
         }
         if ($order_type == 2) {
@@ -104,7 +104,7 @@ class UserController extends Controller
             $status['status'] = 2;
         }
         if ($order_type == 3) {
-            $orderlist = Yii::$app->db->createCommand('select * from order_detail where user_stunum = :stunumber and status <> 5')->bindValue(':stunumber', $stuid)->queryAll();
+            $orderlist = Yii::$app->db->createCommand("select * from order_detail where user_stunum = :stunumber and status <> '5'")->bindValue(':stunumber', $stuid)->queryAll();
              $status['status'] = 3;
         }
         $params['gets'] = $status;
