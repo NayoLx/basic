@@ -123,9 +123,17 @@ class OrderController extends Controller
     */
    public function actionGetallorder()
    {
+       $e = new \stdClass();
        $openid = Yii::$app->request->post('openid','');
        $status = Yii::$app->request->post('status', '');
        $stunumber = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+       $check_close = Yii::$app->db->createCommand('select is_close from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
+
+       if ($check_close['is_close'] == 'true' && $status != '10') {
+           $e->error = '该账号已被封禁，无下单权限，请联系管理员';
+           $e->success = false;
+           return json_encode($e);
+       }
 
        /*0--关于我的全部订单  1--我发起的订单  2--我接的单  10--附近发出的全部订单(除本人之外*/
        if ($status == '0') {
@@ -135,31 +143,40 @@ class OrderController extends Controller
               ->bindValue(':status', '4')
               ->queryAll();
 
-          return json_encode($order);
+          $e->order = $order;
+           $e->success = true;
+
+          return json_encode($e);
        }
        else if ($status == '1') {
            $order = Yii::$app->db->createCommand('select * from order_detail where user_stunum = :stunumber  and status < :status ')
                ->bindValue(':stunumber', $stunumber['stunumber'])
                ->bindValue(':status', '4')
                ->queryAll();
+           $e->order = $order;
+           $e->success = true;
 
-           return json_encode($order);
+           return json_encode($e);
        }
        else if ($status == '2') {
            $order = Yii::$app->db->createCommand('select * from order_detail where staff_stunum = :stunum and status < :status ')
                ->bindValue(':stunum', $stunumber['stunumber'])
                ->bindValue(':status', '4')
                ->queryAll();
+           $e->order = $order;
+           $e->success = true;
 
-           return json_encode($order);
+           return json_encode($e);
        }
        else if($status == '10') {
            $order = Yii::$app->db->createCommand('select * from order_detail where user_stunum != :stunumber and  status = :status ')
                ->bindValue(':stunumber', $stunumber['stunumber'])
                ->bindValue(':status', '1')
                ->queryAll();
+           $e->order = $order;
+           $e->success = true;
 
-           return json_encode($order);
+           return json_encode($e);
        }
    }
 
@@ -218,6 +235,13 @@ class OrderController extends Controller
        /**********2--接单中 3--处理中 4--已完成********/
 
        if ($status == 2) {
+           $check_close = Yii::$app->db->createCommand('select is_close from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
+
+           if ($check_close['is_close'] == 'true') {
+               $e->error = '该账号已被封禁，无接单权限，请联系管理员';
+               return json_encode($e);
+           }
+
            $e-> success = true;
            Yii::$app->db->createCommand()->update('order_detail', [
                'status' => '2',
