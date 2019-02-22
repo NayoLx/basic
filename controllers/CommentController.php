@@ -82,7 +82,7 @@ class CommentController extends Controller
         $form_id = Yii::$app->request->post('form_id', '');
         $keyword1 = Yii::$app->request->post('keyword1', '');  //点赞通知
         $stu = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $touser)->queryOne();
-        $keyword2 = Yii::$app->db->createCommand('select stuname from student where stunumber = :stunumber')->bindValue(':stunumber', $stu['stunumber'])->queryOne(); //点赞人名称
+        $keyword2 = Yii::$app->db->createCommand('select stuname from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stu['stunumber'])->queryOne(); //点赞人名称
         $keyword3 = date('y-m-d H:i:s',time()); //点赞时间
         $keyword4 = Yii::$app->request->post('keyword4', ''); //查看方式
         $access_token = Yii::$app->request->post('access_token', '');

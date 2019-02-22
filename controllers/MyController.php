@@ -67,7 +67,7 @@ class MyController extends Controller
         preg_match_all($cookie_name, $content, $cookie_info);
         $cookie_value = $cookie_info[1][0];
 
-        $grad = Yii::$app->db->createCommand('select * from user_stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();queryOne();
+        $grad = Yii::$app->db->createCommand('select * from user_stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();
         if ($grad == false) {
             Yii::$app->db->createCommand()->insert('user_stugrade', [
                 'stunumber' => $username,
@@ -237,7 +237,7 @@ class MyController extends Controller
     {
         $username = Yii::$app->request->post('stunumber', '');
         $grade = Yii::$app->db->createCommand('select stugrade from user_stugrade where stunumber = :username')->bindValue(':username', $username)->queryOne();
-        $getgrade = unserialize($grade['user_stugrade']);
+        $getgrade = unserialize($grade['stugrade']);
 
         echo json_encode($getgrade);
     }

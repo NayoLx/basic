@@ -239,7 +239,7 @@ $this->title = '实时指标';
             var option2 = {
 
                 title : {
-                    text: '这周订单比例',
+                    text: '今日订单比例',
                     x:'center'
                 },
                 tooltip : {

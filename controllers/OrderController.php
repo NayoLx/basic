@@ -73,7 +73,7 @@ class OrderController extends Controller
            return json_encode($order);
        }
 
-       $check = Yii::$app->db->createCommand( 'select * from order_detail where user_stunum = :stunumber and status = :status and status = :sclose and status = :sclos')
+       $check = Yii::$app->db->createCommand( 'select * from order_detail where user_stunum = :stunumber and (status = :status or status = :sclose or status = :sclos)')
            ->bindValue(':stunumber', $stunumber['stunumber'])
            ->bindValue(':status', 1)
            ->bindValue(':sclose', 2)
