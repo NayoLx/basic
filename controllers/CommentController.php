@@ -125,4 +125,25 @@ class CommentController extends Controller
 
     }
 
+    public function actionCommentwxlist()
+    {
+        $e = new \stdClass();
+        $list = Yii::$app->db->createCommand('select * from comment_text_detail')->queryAll();
+
+        $e->list = $list;
+        $e->success = true;
+        return json_encode($e);
+    }
+
+    public  function actionComentdetail()
+    {
+        $e = new \stdClass();
+        $id = Yii::$app->request->post('id', '');
+
+        $detail = Yii::$app->db->createCommand('select * from comment_text_detail where id = :id')->bindValue(':id', $id)->queryOne();
+        $e->detail = $detail;
+
+        return json_encode($e);
+    }
+
 }

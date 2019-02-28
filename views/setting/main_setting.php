@@ -32,6 +32,11 @@ $tabArr = [
         'name' => '快递公司列表',
         'url' => Url::toRoute(["/setting/kuaidilist"])
     ],
+    [
+        'label' => 'mina_comment',
+        'name' => '文章列表',
+        'url' => Url::toRoute(["/setting/commentlist"])
+    ],
 ]
 ?>
 

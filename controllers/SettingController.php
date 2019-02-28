@@ -208,4 +208,74 @@ class SettingController extends controller
         return $params;
     }
 
+    public function actionCommentlist()
+    {
+
+        $array_list = Yii::$app->db->createCommand('select * from comment_text_detail')->queryAll();
+        $params = [];
+
+        $params['array_list'] = $array_list;
+        return $this->render('comment_text', $params);
+    }
+
+    public function actionNewcomment()
+    {
+        return $this->render('newcomment');
+    }
+
+    public function actionAddcomment()
+    {
+        $e = new \stdClass();
+        $texttitle = Yii::$app->request->post('texttitle','');
+        $textcomment = Yii::$app->request->post('textcomment','');
+        $author = Yii::$app->session['username'];
+        $time = date('y-m-d H:i:s',time());
+
+        Yii::$app->db->createCommand()->insert('comment_text_detail',[
+            'title' => $texttitle,
+            'detail' => $textcomment,
+            'data' => $time,
+            'avater' => 'https://wx.qlogo.cn/mmopen/vi_32/nfMPoEP0ibtzpJxMqUPGiaojVvCRicATEyNhWvAvPeAibV11IVL8EODcTMZ2whYjGy2RKibJxv4D0p5uULXq94hypibw/132',
+            'author' => $author,
+        ])->execute();
+
+        $e -> success = true;
+        $e -> title = '保存成功';
+        return json_encode($e);
+    }
+
+    public function actionEditcommentac()
+    {
+        $e = new \stdClass();
+        $id = Yii::$app->request->post('id','');
+        $texttitle = Yii::$app->request->post('texttitle','');
+        $textcomment = Yii::$app->request->post('textcomment','');
+        $time = date('y-m-d H:i:s',time());
+
+        Yii::$app->db->createCommand()->update('comment_text_detail',[
+            'title' => $texttitle,
+            'detail' => $textcomment,
+            'updata_time' => $time,
+        ],'id = :id')->bindValue(':id', $id)->execute();
+
+        $e -> success = true;
+        $e -> title = '保存成功';
+        return json_encode($e);
+    }
+
+    public function actionEditcomment()
+    {
+        $request = \yii::$app->request;
+        $id = $request->get('id');
+        $params = [];
+        $choose = Yii::$app->db->createCommand('select * from comment_text_detail where id = :id')->bindValue(':id', $id)->queryOne();
+        $params['detail'] = $choose;
+
+        return $this->render('editcomment', $params);
+    }
+
+    public function actionDeletecomment()
+    {
+
+    }
 }

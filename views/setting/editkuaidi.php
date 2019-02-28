@@ -17,7 +17,7 @@ use yii\helpers\Url;
         <div class="form-group col-sm-12" style="display: none">
             <label for="skillName" class="col-sm-4 control-label text-right">id：</label>
             <div class="col-sm-4 text-left">
-                <input type="text"  class="form-control col-sm-3" id="tagid" value="<?=$choose['id']?>" placeholder="请输入名称">
+                <input type="text"  class="form-control col-sm-3" id="tagid" value="<?=$choose['id']?>" placeholder="请输入id">
             </div>
         </div>
         <div class="form-group col-sm-12">
