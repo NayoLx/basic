@@ -186,12 +186,21 @@ class OrderController extends Controller
    public function actionDeleteorder()
    {
        $order = new \stdClass();
+       $e = new \stdClass();
+       $e->success = false;
        $openid = Yii::$app->request->post('openid', '');
        $stunumber = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
        $operator_id = Yii::$app->db->createCommand('select stuname from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
 
        $order_no = Yii::$app->request->post('order_no', '');
        $time = date('y-m-d H:i:s',time());
+
+       $status = Yii::$app->db->createCommand('select status from order_detail where order_no = :order_no')->bindValue(':order_no', $order_no)->queryOne();
+
+       if ($status['status'] == '3') {
+           $e->error = '订单正在处理无法取消订单';
+           return json_encode($e);
+       }
 
        Yii::$app->db->createCommand()->update('order_detail', [
            'status' => '5',
@@ -208,10 +217,12 @@ class OrderController extends Controller
           $order -> order_id = $order_no;
 
           LogHelpers::orderlog(LogHelpers::ACTION_DELETE, $order);
-          return 'true';
+          $e->success = true;
+          return json_encode($e);
        }
 
-       return 'false';
+       $e->error = '订单取消失败请重试';
+       return json_encode($e);
    }
 
    /**
@@ -239,6 +250,17 @@ class OrderController extends Controller
 
            if ($check_close['is_close'] == 'true') {
                $e->error = '该账号已被封禁，无接单权限，请联系管理员';
+               return json_encode($e);
+           }
+
+           $check = Yii::$app->db->createCommand( 'select * from order_detail where staff_stunum = :stunumber and (status = :sclose or status = :sclos)')
+               ->bindValue(':stunumber', $stunumber['stunumber'])
+               ->bindValue(':sclose', 2)
+               ->bindValue(':sclos', 3)
+               ->queryAll();
+
+           if (count($check)>=2) {
+               $e->error = '还有未处理的订单，暂无法接单';
                return json_encode($e);
            }
 
