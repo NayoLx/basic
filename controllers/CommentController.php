@@ -24,10 +24,16 @@ class CommentController extends Controller
         $comment = Yii::$app->request->post('comment', '');
         $postid = Yii::$app->request->post('postid', '');
 
-        $detail = Yii::$app->db->createCommand('select nickName , avatarUrl from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+        $detail = Yii::$app->db->createCommand('select nickName , avatarUrl , stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
         $time = date('y-m-d H:i',time());
         $name = $detail['nickName'];
         $avatar = $detail['avatarUrl'];
+        $stunumber = $detail['stunumber'];
+
+        $check = Yii::$app->db->createCommand('select is_comment_close from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber)->queryOne();
+        if ($check['is_comment_close'] == 'true') {
+            return json_encode(array('status' => 'false', 'error' => '您已被禁言2天'));
+        }
 
         Yii::$app->db->createCommand()->insert('comment_both', [
             'comment' => $comment,
@@ -128,7 +134,7 @@ class CommentController extends Controller
     public function actionCommentwxlist()
     {
         $e = new \stdClass();
-        $list = Yii::$app->db->createCommand('select * from comment_text_detail')->queryAll();
+        $list = Yii::$app->db->createCommand('select * from comment_text_detail where status = :status')->bindValue(':status', '1')->queryAll();
 
         $e->list = $list;
         $e->success = true;

@@ -61,8 +61,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="text-left"><?=$info['idcard']?></td>
                 </tr>
                 <tr >
-                    <td class="text-right">用户学生信息：</td>
-                    <td class="text-left"><a id='openstu'>显示</a></td>
                     <td class="text-right">禁用状态：</td>
                     <td class="text-left">
                         <?php if($info['is_close'] == 'true'): ?>
@@ -71,11 +69,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             <a class="btn btn-primary" id="closeAccount">未禁用</a>
                         <?php endif; ?>
                     </td>
+                    <td class="text-right">禁言状态：</td>
+                    <td class="text-left">
+                        <?php if($info['is_comment_close'] == 'true'): ?>
+                            <a class="btn btn-primary" style=" background-color: #b94a48; border: none" id="openComment" >解禁</a>
+                        <?php else: ?>
+                            <a class="btn btn-primary" id="closeComment">未禁用</a>
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <tr >
-                    <td colspan="12" class="text-right">
-                        <button type="submit" class="btn btn-primary" id="search"> 修 改 </button>
-                    </td>
+                    <td class="text-right">用户学生信息：</td>
+                    <td class="text-left"><a id='openstu'>显示</a></td>
                 </tr>
                 </tbody>
             </table>
@@ -254,6 +259,61 @@ $this->params['breadcrumbs'][] = $this->title;
            {
                console.log('false');
            }
+
        })
+
+       $('#openComment').click(function () {
+           var close_box = confirm('是否解禁该用户')
+           if(close_box == true)
+           {
+               $.ajax({
+                   url:'?r=user/opencomment&id=<?=$info['stunumber'] ?>',
+                   type: 'get',
+                   dataType: 'json',
+                   success: function (res) {
+                       console.log(res)
+                       if (!res.success) {
+                           alert(res.error);
+                       } else {
+                           alert('解禁成功！');
+                           setTimeout(function () {
+                               window.location.href = '?r=user/info&id=<?=$info['stunumber'] ?>'
+                           }, 500);
+                       }
+                   }
+               })
+           }
+           else if(close_box == false)
+           {
+               console.log('false');
+           }
+       })
+
+           $('#closeComment').click(function () {
+               var close_box = confirm('是否禁言该用户')
+               if(close_box == true)
+               {
+                   $.ajax({
+                       url:'?r=user/closecomment&id=<?=$info['stunumber'] ?>',
+                       type: 'get',
+                       dataType: 'json',
+                       success: function (res) {
+                           console.log(res)
+                           if (!res.success) {
+                               alert(res.error);
+                           } else {
+                               alert('禁言成功！');
+                               setTimeout(function () {
+                                   window.location.href = '?r=user/info&id=<?=$info['stunumber'] ?>'
+                               }, 500);
+                           }
+                       }
+                   })
+               }
+               else if(close_box == false)
+               {
+                   console.log('false');
+               }
+           })
    })
 </script>

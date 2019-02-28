@@ -213,4 +213,34 @@ class UserController extends Controller
 
         return json_encode($e);
     }
+
+    public function actionOpencomment()
+    {
+        $e = new \stdClass();
+        $request = \yii::$app->request;
+        $stuid = intval($request->get('id'));
+
+        Yii::$app->db->createCommand()->update('user_student', [
+            'is_comment_close' => 'false',
+        ], 'stunumber = :id')->bindValue(':id', $stuid)->execute();
+
+        $e->success = true;
+
+        return json_encode($e);
+    }
+
+    public function actionClosecomment()
+    {
+        $e = new \stdClass();
+        $request = \yii::$app->request;
+        $stuid = intval($request->get('id'));
+
+        Yii::$app->db->createCommand()->update('user_student', [
+            'is_comment_close' => 'true',
+        ], 'stunumber = :id')->bindValue(':id', $stuid)->execute();
+
+        $e->success = true;
+
+        return json_encode($e);
+    }
 }

@@ -210,8 +210,10 @@ class SettingController extends controller
 
     public function actionCommentlist()
     {
-
-        $array_list = Yii::$app->db->createCommand('select * from comment_text_detail')->queryAll();
+        /**
+         * 1****正常状态 2****删除状态
+         */
+        $array_list = Yii::$app->db->createCommand('select * from comment_text_detail ')->queryAll();
         $params = [];
 
         $params['array_list'] = $array_list;
@@ -237,6 +239,7 @@ class SettingController extends controller
             'data' => $time,
             'avater' => 'https://wx.qlogo.cn/mmopen/vi_32/nfMPoEP0ibtzpJxMqUPGiaojVvCRicATEyNhWvAvPeAibV11IVL8EODcTMZ2whYjGy2RKibJxv4D0p5uULXq94hypibw/132',
             'author' => $author,
+            'status' => '1',
         ])->execute();
 
         $e -> success = true;
@@ -276,6 +279,19 @@ class SettingController extends controller
 
     public function actionDeletecomment()
     {
+        $e = new \stdClass();
+        $id = Yii::$app->request->GET('id','');
+        $e->id = $id;
+        $time = date('y-m-d H:i:s',time());
 
+        Yii::$app->db->createCommand()->update('comment_text_detail',[
+            'status' => '2',
+            'updata_time' => $time,
+        ],'id = :id')->bindValue(':id', $id)->execute();
+
+        $e -> success = true;
+        $e -> title = '保存成功';
+
+        return json_encode($e);
     }
 }
