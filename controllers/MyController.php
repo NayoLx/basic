@@ -597,4 +597,43 @@ class MyController extends Controller
         return json_encode($e);
 
     }
+
+    /***
+     * @return string
+     * 访问微信接口获取openid
+     */
+    public function actionGetwxopenid()
+    {
+        $code = Yii::$app->request->post('code', '');
+        $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=wx1e5e51581c102b66&secret=b1cef0526d4c19b2261a0e33fee62e41&js_code=' . $code . '&grant_type=authorization_code';
+        $ch = curl_init(); //初始化一个CURL对象
+        curl_setopt($ch, CURLOPT_URL, $url);//设置你所需要抓取的URL
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//跳过证书验证
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//设置curl参数，要求结果是否输出到屏幕上，为true的时候是不返回到网页中,假设上面的0换成1的话，那么接下来的$data就需要echo一下。
+        $data = json_decode(curl_exec($ch));
+
+        return json_encode($data);
+        curl_close($ch);
+
+    }
+
+    /***
+     * @return string
+     * 访问微信接口获取access_token
+     */
+    public function actionGetwxtoken()
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx1e5e51581c102b66&secret=b1cef0526d4c19b2261a0e33fee62e41';
+        $ch = curl_init(); //初始化一个CURL对象
+        curl_setopt($ch, CURLOPT_URL, $url);//设置你所需要抓取的URL
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//跳过证书验证
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//设置curl参数，要求结果是否输出到屏幕上，为true的时候是不返回到网页中,假设上面的0换成1的话，那么接下来的$data就需要echo一下。
+        $data = json_decode(curl_exec($ch));
+
+        return json_encode($data);
+        curl_close($ch);
+
+    }
 }
