@@ -86,8 +86,12 @@ class UserController extends Controller
             $year = 2018;
             $time = 1;
         }
-        $scgedular = $this->getScgedular($stuid, $year, $time);
-        
+
+        if ($stuid != 'root') {
+            $scgedular = $this->getScgedular($stuid, $year, $time);
+            $params['scgedular'] = $scgedular;
+        }
+
         $params['info'] = $user_info;
         $params['avatar'] = $user_avatar;
         $status = ['status' => 0, 'year'=>$year, 'time'=> $time ];
@@ -109,7 +113,6 @@ class UserController extends Controller
         }
         $params['gets'] = $status;
         $params['orderlist'] = $orderlist;
-        $params['scgedular'] = $scgedular;
         $params['obligatory'] = unserialize($user_info['obligatory']);
 
         return $this->render('info', $params);
@@ -168,7 +171,7 @@ class UserController extends Controller
 
         Yii::$app->session['be_login'] = 1;
         Yii::$app->session['username'] = $username;
-        LogHelpers::loginLog(1);     //登陆log
+        LogHelpers::loginLog(1, $username);     //登陆log
         $e -> success = true;
         $e -> error = '登陆成功';
 
@@ -177,7 +180,8 @@ class UserController extends Controller
 
     public function actionLogout()
     {
-        LogHelpers::loginLog(0);     //登陆log
+        $username = Yii::$app->session['username'];
+        LogHelpers::loginLog(0, $username);     //登陆log
         Yii::$app->session->remove('be_login');
         Yii::$app->session->remove('username');
 

@@ -636,4 +636,47 @@ class MyController extends Controller
         curl_close($ch);
 
     }
+
+    /**
+     * 绑定测试账号
+     */
+    public function actionBindtextid()
+    {
+        $e = new \stdClass();
+        $e->success = false;
+        $openid = Yii::$app->request->post('openid', ' ');
+        $id_text = Yii::$app->request->post('id_text', ' ');
+        $password_text = Yii::$app->request->post('password_text', ' ');
+        $select = Yii::$app->db->createCommand('select * from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+
+        if (empty($select)) {
+            $rootModel = Yii::$app->db->createCommand()->insert('wxdeatil',[
+                'openid'          => $openid,
+                'is_bind'         => 'true',
+                'is_idcard_check' => 'true',
+                'stunumber'       => 'root',
+                'password'        => 'root',
+                'phone'           => 'root',
+            ])->execute();
+        }
+
+        if ($id_text == 'root' && $password_text == 'root') {
+            $rootModel = Yii::$app->db->createCommand()->update('wxdeatil',[
+                'is_bind'         => 'true',
+                'is_idcard_check' => 'true',
+                'stunumber'       => 'root',
+                'password'        => 'root',
+                'phone'           => 'root',
+            ], 'openid = :openid')->bindValue(':openid', $openid)->execute();
+        }
+
+        if (empty($rootModel)) {
+            $e->success = true;
+            $e->msg = '测试账号绑定成功！';
+        }
+        $e->msg = '绑定失败，请联系管理员。';
+
+        return json_encode($e);
+
+    }
 }
