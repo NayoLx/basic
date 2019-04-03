@@ -648,6 +648,21 @@ class MyController extends Controller
         $id_text = Yii::$app->request->post('id_text', ' ');
         $password_text = Yii::$app->request->post('password_text', ' ');
         $select = Yii::$app->db->createCommand('select * from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+        $selectStuid = Yii::$app->db->createCommand('select * from user_student where stunnumber = :stumunber')->bindValue('stumunber', 'root')->queryOne();
+        if (empty($selectStuid)) {
+            Yii::$app->db->createCommand()->insert('user_student', [
+                'stunumber'  => 'root',
+                'password'  => 'root',
+                'stuname'  => 'root',
+                'major'  => 'root',
+                'year'  => 'root',
+                'idcard'  => 'root',
+                'schoolemail'  => 'root',
+                'class'  => 'root',
+                'headmaster'  => 'root',
+                'Instructor'  => 'root',
+            ])->execute();
+        }
 
         if (empty($select)) {
             $rootModel = Yii::$app->db->createCommand()->insert('wxdeatil',[
