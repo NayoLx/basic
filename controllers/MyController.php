@@ -648,8 +648,8 @@ class MyController extends Controller
         $id_text = Yii::$app->request->post('id_text', ' ');
         $password_text = Yii::$app->request->post('password_text', ' ');
         $select = Yii::$app->db->createCommand('select * from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
-        $selectStuid = Yii::$app->db->createCommand('select * from user_student where stunnumber = :stumunber')->bindValue('stumunber', 'root')->queryOne();
-        if (empty($selectStuid)) {
+        $selectStuid = Yii::$app->db->createCommand('select * from user_student where stunumber = :stumunber')->bindValue('stumunber', 'root')->queryOne();
+        if ($selectStuid == '') {
             Yii::$app->db->createCommand()->insert('user_student', [
                 'stunumber'  => 'root',
                 'password'  => 'root',
@@ -664,7 +664,7 @@ class MyController extends Controller
             ])->execute();
         }
 
-        if (empty($select)) {
+        if ($select == '') {
             $rootModel = Yii::$app->db->createCommand()->insert('wxdeatil',[
                 'openid'          => $openid,
                 'is_bind'         => 'true',
@@ -676,18 +676,17 @@ class MyController extends Controller
         }
 
         if ($id_text == 'root' && $password_text == 'root') {
-            $rootModel = Yii::$app->db->createCommand()->update('wxdeatil',[
+            Yii::$app->db->createCommand()->update('wxdeatil',[
                 'is_bind'         => 'true',
                 'is_idcard_check' => 'true',
                 'stunumber'       => 'root',
                 'password'        => 'root',
                 'phone'           => 'root',
             ], 'openid = :openid')->bindValue(':openid', $openid)->execute();
-        }
 
-        if (empty($rootModel)) {
             $e->success = true;
             $e->msg = '测试账号绑定成功！';
+            return json_encode($e);
         }
         $e->msg = '绑定失败，请联系管理员。';
 
