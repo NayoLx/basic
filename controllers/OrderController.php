@@ -57,8 +57,10 @@ class OrderController extends Controller
        $detail_text = Yii::$app->request->post('detail_text', '');
        $start_time = Yii::$app->request->post('start_time', '');
        $end_time = Yii::$app->request->post('end_time', '');
+       $formId = Yii::$app->request->post('formId', '');
 
        $stunumber = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+       $phone = Yii::$app->db->createCommand('select phone from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
        $stu_name = Yii::$app->db->createCommand('select stuname from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
        $order_no = Order::setOrder_no($order_type);
        $type = Order::setType($order_type);
@@ -86,6 +88,7 @@ class OrderController extends Controller
                'order_no' => $order_no,
                'user_stunum' => $stunumber['stunumber'],
                'user_name' => $stu_name['stuname'],
+               'user_phone' => $phone['phone'],
                'order_type' => $order_type,
                'type' => $type,
                'sex' => $sex,
@@ -102,6 +105,10 @@ class OrderController extends Controller
                'is_finish' => 'false',
            ])->execute();
 
+           if ($formId != 'the formId is a mock one') {
+               self::setFormId($formId, $order_no);
+           }
+
            //log日志
            $order -> order_id = $order_no;
            $order -> user_name =  $stu_name['stuname'];
@@ -117,6 +124,45 @@ class OrderController extends Controller
            return json_encode($order);
        }
    }
+
+    /**
+     * @param $form_id
+     * @param $order_no
+     * @throws Exception
+     * 保存formId
+     */
+   static function setFormId($form_id, $order_no)
+   {
+       $order_id = Yii::$app->db->createCommand('select id from order_detail where order_no = :order_no')->bindValue(':order_no', $order_no)->queryOne();
+       $time = date('y-m-d H:i:s',time());
+
+       Yii::$app->db->createCommand()->insert('order_form_id',[
+           'order_id' => $order_id['id'],
+           'formId' => $form_id,
+           'creat_at' => $time,
+           'updata_at' => $time,
+       ])->execute();
+
+   }
+
+    /***
+     * @return string
+     * 访问微信接口获取access_token
+     */
+    public function actionWxtoken()
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx1e5e51581c102b66&secret=b1cef0526d4c19b2261a0e33fee62e41';
+        $ch = curl_init(); //初始化一个CURL对象
+        curl_setopt($ch, CURLOPT_URL, $url);//设置你所需要抓取的URL
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//跳过证书验证
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//设置curl参数，要求结果是否输出到屏幕上，为true的时候是不返回到网页中,假设上面的0换成1的话，那么接下来的$data就需要echo一下。
+        $data = json_decode(curl_exec($ch));
+
+        return json_encode($data);
+        curl_close($ch);
+
+    }
 
    /**
     * 获取订单信息 （查
@@ -240,6 +286,7 @@ class OrderController extends Controller
         * 该用户
         */
        $stunumber = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
+       $phone = Yii::$app->db->createCommand('select phone from wxdeatil where openid = :openid')->bindValue(':openid', $openid)->queryOne();
        $stuname = Yii::$app->db->createCommand('select stuname from user_student where stunumber = :stunumber')->bindValue(':stunumber', $stunumber['stunumber'])->queryOne();
        $time = date('y-m-d H:i:s',time());
 
@@ -269,6 +316,7 @@ class OrderController extends Controller
                'status' => '2',
                'staff_stunum' => $stunumber['stunumber'],
                'staff_name' => $stuname['stuname'],
+               'staff_phone' => $phone['phone'],
                'status_labal' => '接单中',
                'status_pick_time' => $time,
                'is_bind_take' =>'true',
@@ -389,6 +437,7 @@ class OrderController extends Controller
 
        $touser = Yii::$app->request->post('touser', '');
        $template_id = Yii::$app->request->post('template_id', '');
+       $order_id = Yii::$app->request->post('order_id', '');
        $form_id = Yii::$app->request->post('form_id', '');
        $keyword1 = Yii::$app->request->post('keyword1', '');  //订单号
        $stu = Yii::$app->db->createCommand('select stunumber from wxdeatil where openid = :openid')->bindValue(':openid', $touser)->queryOne();
@@ -433,12 +482,13 @@ class OrderController extends Controller
 
 
        $dd = array();
-       $data = array();
+
+       $formId = Yii::$app->db->createCommand('select formId from order_form_id where order_id = :order_id')->bindValue(':order_id', $order_id)->queryOne();
 
        $dd['touser'] = $touser;
        $dd['template_id'] = $template_id;
        $dd['page'] = Yii::$app->request->post('page', '');;
-       $dd['form_id'] = $form_id;
+       $dd['form_id'] = $formId['formId'];
        $dd['data'] = $value;
 
 //       return json_encode($dd);
