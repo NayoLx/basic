@@ -94,7 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                     <tr class="text-center">
                         <td>
-                            <button type="button" class="btn btn-primary ladda-button" data-style="slide-up" id="save">提交备注</button>
+                            <button type="button" class="btn btn-primary ladda-button" data-style="slide-up" id="save_remark">提交备注</button>
                         </td>
                     </tr>
                 </table>
@@ -196,6 +196,28 @@ $this->params['breadcrumbs'][] = $this->title;
             else if(close_box == false)
             {
                 console.log('false');
+            }
+        })
+
+        $('#save_remark').click(function () {
+            var remark_box = confirm('是否保存备注')
+            var remark = $('#remark').val();
+            if(remark_box == true)
+            {
+                $.ajax({
+                    url:'?r=order/remark&id=<?=$data['id'] ?>&orderid=<?=$data['order_no'] ?>',
+                    type: 'post',
+                    data: {
+                      'remark': remark,
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        if(res.success){
+                            var url = '?r=order/orderdetail&id=<?=$data['id'] ?>';
+                            window.location.href = url;
+                        }
+                    }
+                })
             }
         })
     })

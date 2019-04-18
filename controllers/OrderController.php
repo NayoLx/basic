@@ -685,4 +685,20 @@ class OrderController extends Controller
        $e -> error = '出错啦';
        return json_encode($e);
    }
+
+
+   //备注
+   public function actionRemark()
+   {
+       $e = new \stdClass();
+       $orderid = Yii::$app->request->post('orderid', '');
+       $id = Yii::$app->request->post('id', '');
+       $remark =  Yii::$app->request->post('remark', '');
+       $staff_name = Yii::$app->session['username'];
+
+       $e->remark = $remark;
+       $e->staff_name = $staff_name;
+
+       return json_encode($e);
+   }
 }
