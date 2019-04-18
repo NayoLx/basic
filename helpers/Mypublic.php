@@ -66,6 +66,7 @@ class Mypublic
         preg_match_all($preg_name, $page, $detail);
 
         $stunum = Mypublic::trimall($detail[1][2]);
+        $stuname = Mypublic::trimall($detail[1][3]);
         $year = Mypublic::trimall($detail[1][4]);
         $major = Mypublic::trimall($detail[1][5]);
         $idcard = Mypublic::trimall($detail[1][6]);
@@ -79,6 +80,7 @@ class Mypublic
 
         //专业：[1][5] 身份证：[1][6] 邮箱：[1][7] 班主任：[1][8] 辅导员[1][9]
         Yii::$app->db->createCommand()->update('user_student',[
+            'stuname' => $stuname,
             'major' => $major,
             'year' => $year,
             'idcard' => $idcard,

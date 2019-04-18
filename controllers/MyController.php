@@ -310,9 +310,9 @@ class MyController extends Controller
         $testx = Yii::$app->db->createCommand('select obligatory from user_student where stunumber = :username and password = :password')
             ->bindValue(':username', $username)
             ->bindValue(':password', $password)
-            ->queryAll();
+            ->queryOne();
 
-        if ($testx) {
+        if ($testx['obligatory'] != null || $testx['obligatory'] != '') {
 
             $db_obligatory = unserialize($testx[0]['obligatory']);
             echo json_encode($db_obligatory);
